@@ -1,4 +1,4 @@
 import { useQuery } from './query.utils';
 
-export const useHelloWorld = () => useQuery<string>('hello');
+export const useUsers = () => useQuery<string[]>('users');
 
