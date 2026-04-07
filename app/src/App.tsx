@@ -1,9 +1,15 @@
-import { useState } from "react";
-import { useUsers } from "./queries/queries";
+import { useMemo, useState } from "react";
+import { useLocations, useUsers } from "./queries/queries";
 import { useAddUser } from "./mutations/mutations";
 
 function App() {
   const { loading, data, refetch } = useUsers();
+
+  const { data: locationsData } = useLocations();
+  const locations = useMemo(() => locationsData || [], [locationsData]);
+
+  console.log(locations, locationsData);
+
   const { addUser } = useAddUser();
 
   const [username, setUsername] = useState("");

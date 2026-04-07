@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { MOCK_API } from "../msw/handlers";
 
 export function useQuery<T>(key: string) {
   const [data, setData] = useState<T | null>(null);
@@ -14,6 +15,40 @@ export function useQuery<T>(key: string) {
       .then((json) => {
         const data = json.data as T;
         setData(data);
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [key]);
+
+  const runRef = useRef<boolean>(false);
+  useEffect(() => {
+    if (runRef.current) return;
+    runRef.current = true;
+    runQuery();
+  }, [runQuery]);
+
+  const refetch = useCallback(() => {
+    setLoading(true);
+    runQuery();
+  }, [runQuery]);
+
+  return { data, loading, error, refetch };
+}
+
+export function useMockQuery<T>(key: string) {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const runQuery = useCallback(() => {
+    fetch(`${MOCK_API}${key}`)
+      .then((response) => {
+        console.log(response);
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.json();
+      })
+      .then((data) => {
+        setData(data as T);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
