@@ -12,3 +12,18 @@ Activate it
 .venv/Scripts/activate
 ```
 
+Install requirements 
+
+```bash
+pip install -r requirements.txt
+```
+
+# Running Flask
+
+./py_be folder
+
+Ensure venv is active
+
+```bash
+.venv/Scripts/activate
+```

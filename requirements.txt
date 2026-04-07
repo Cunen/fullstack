@@ -1,0 +1,6 @@
+flask==3.1.2
+sqlalchemy==2.0.19
+flask-sqlalchemy==3.0.3
+robotframework==7.4.2
+robotframework-seleniumlibrary==6.8.0
+robotframework-robocop==8.2.4
