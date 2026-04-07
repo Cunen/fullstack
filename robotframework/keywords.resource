@@ -18,5 +18,6 @@ Close Application
 Fill Username Field
     [Documentation]    Fill and check username input
     ${choice}    Get Random Choice
+    Wait Until Page Contains Element    id=username
     Input Text    id=username    ${choice}
     Textfield Value Should Be    id=username    ${choice}
