@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { useLocations, useUsers } from "./queries/queries";
 import { useAddUser } from "./mutations/mutations";
 
+import { Button } from "webcomponents";
+
 function App() {
   const { loading, data, refetch } = useUsers();
 
@@ -30,8 +32,8 @@ function App() {
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
-      <button onClick={handleAddUser}>Add User</button>
-      <button onClick={() => refetch()}>Refetch</button>
+      <Button text="Add User" click={handleAddUser} />
+      <Button text="Refetch" click={refetch} />
     </>
   );
 }

@@ -1,0 +1,29 @@
+{
+  "name": "webcomponents",
+  "version": "1.0.0",
+  "description": "Collection of framework-agonostic web components",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && tsc"
+  },
+  "author": "Kalle Kuparinen",
+  "license": "ISC",
+  "dependencies": {
+    "@lit/react": "^1.0.8",
+    "lit": "^3.3.2",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.7"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.2"
+  }
+}
