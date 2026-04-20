@@ -1,3 +1,11 @@
+# Random repository full of random fullstack junk
+
+Don't take what you see here too seriously.
+
+This repository won't be built using AI tools.
+
+Forever WIP
+
 # Setting up your Python VENV (Windows)
 
 Create your VENV at desired location, such as ./py_be folder
@@ -18,12 +26,6 @@ Install requirements
 pip install -r requirements.txt
 ```
 
-# Running Flask
+# Running pieces of the application
 
-./py_be folder
-
-Ensure venv is active
-
-```bash
-.venv/Scripts/activate
-```
+See README of each folder
