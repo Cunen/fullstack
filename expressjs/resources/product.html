@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <title>NODEJS</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .form-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 16px;
+        margin: 16px;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      form {
+        display: flex;
+        flex: 0 1 100%;
+        flex-direction: column;
+        gap: 16px;
+        height: 16px;
+      }
+
+      input {
+        display: flex;
+        flex: 0 1 100%;
+        height: 32px;
+        min-height: 32px;
+        width: 256px;
+        align-items: center;
+        padding: 0 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        display: flex;
+        flex: 0 1 auto;
+        height: 32px;
+        min-height: 32px;
+        width: 256px;
+        padding: 0px 16px;
+        align-items: center;
+        justify-content: center;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <h1>A form</h1>
+      <form action="/api/product" method="POST">
+        <input type="text" name="name" id="name" placeholder="name" />
+        <input type="text" name="price" id="price" placeholder="price" />
+        <input
+          type="text"
+          name="description"
+          id="description"
+          placeholder="description"
+        />
+        <button type="submit">Add Product</button>
+      </form>
+    </div>
+  </body>
+</html>

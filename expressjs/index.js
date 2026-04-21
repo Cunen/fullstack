@@ -1,19 +1,24 @@
 import http from "http";
 import express from "express";
+import bodyParser from "body-parser";
 
-import { viewHandler } from "./modules/views.js";
-import { apiHandler } from "./modules/api.js";
-import { rootHandler } from "./modules/root.js";
+import apiRouter from "./routes/api.js";
+import viewRouter from "./routes/views.js";
+
+import { openHTMLTemplate } from "./modules/template.js";
 
 const app = express();
 
 const server = http.createServer(app);
 
-app.use("/api", apiHandler);
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use("/view", viewHandler);
+app.use(apiRouter);
 
-app.use("/", rootHandler);
+app.use(viewRouter);
+
+// Fallback
+app.use("/", (req, res) => openHTMLTemplate("404", res));
 
 // Listen on port 8081
 server.listen(8081, () => {
