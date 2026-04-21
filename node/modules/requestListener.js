@@ -1,5 +1,5 @@
-import { apiListener } from './api.js';
-import { viewListener } from './view.js';
+import { apiListener } from "./api.js";
+import { viewListener } from "./view.js";
 
 /** Handles incoming HTTP requests.
  * @param {http.IncomingMessage} req - The incoming request object.
@@ -8,16 +8,11 @@ import { viewListener } from './view.js';
 export function requestListener(req, res) {
   const { url, method, headers } = req;
 
-
-  if (url.startsWith('/api/')) {
+  if (url.startsWith("/api/")) {
     apiListener(req, res);
-  }
-
-  else if (url.startsWith('/view/')) { 
+  } else if (url.startsWith("/view/")) {
     viewListener(req, res);
-  }
-
-  else {
+  } else {
     // Redirect to root view
     res.writeHead(302, { Location: "/view/" });
     res.end();

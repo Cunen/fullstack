@@ -5,11 +5,13 @@
   "description": "Plain Node",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "format": "prettier --write ."
   },
   "author": "Kalle Kuparinen",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "prettier": "^3.8.3"
   }
 }

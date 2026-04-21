@@ -1,5 +1,5 @@
-import http from 'http';
-import { requestListener } from './modules/requestListener.js';
+import http from "http";
+import { requestListener } from "./modules/requestListener.js";
 
 const server = http.createServer(requestListener);
 
