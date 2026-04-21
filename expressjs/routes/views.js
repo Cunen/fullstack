@@ -1,7 +1,6 @@
 import express from "express";
 
 import { openHTMLTemplate } from "../utilities/template.js";
-import { viewsDir } from "../utilities/path.js";
 
 const viewRouter = express.Router();
 
