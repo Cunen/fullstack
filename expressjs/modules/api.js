@@ -1,13 +1,13 @@
 import fs from "fs";
 
-/** Handles return VIEWS */
+/** Handles API requests */
 export const apiHandler = (req, res, next) => {
   const { url, method, headers } = req;
 
   // POST /api/message
-  if (method === "POST" && url.startsWith("/api/message")) {
+  if (method === "POST" && url.startsWith("/message")) {
     res.writeHead(302, { Location: "/view/" });
-    res.send();
+    res.end();
   }
   // No detected API-calls
   else {

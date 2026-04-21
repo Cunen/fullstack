@@ -3,14 +3,17 @@ import express from "express";
 
 import { viewHandler } from "./modules/views.js";
 import { apiHandler } from "./modules/api.js";
+import { rootHandler } from "./modules/root.js";
 
 const app = express();
 
 const server = http.createServer(app);
 
-app.use(apiHandler);
+app.use("/api", apiHandler);
 
-app.use(viewHandler);
+app.use("/view", viewHandler);
+
+app.use("/", rootHandler);
 
 // Listen on port 8081
 server.listen(8081, () => {

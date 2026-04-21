@@ -1,11 +1,11 @@
 import fs from "fs";
 
-/** Handles return VIEWS */
+/** Handles VIEW endpoints */
 export const viewHandler = (req, res, next) => {
   const { url, method, headers } = req;
 
   // GET /view/
-  if (method === "GET" && url.startsWith("/view/")) {
+  if (method === "GET") {
     fs.readFile("./resources/form.html", "utf-8", (err, data) => {
       if (err) {
         res.status(500).send("Error reading file");
@@ -13,10 +13,9 @@ export const viewHandler = (req, res, next) => {
       }
       res.send(data);
     });
+    return;
   }
-  // Redirect to /view/ if no view is found
   else {
-    res.writeHead(302, { Location: "/view/" });
-    res.send();
+    next();
   }
 };
