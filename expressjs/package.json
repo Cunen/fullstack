@@ -3,9 +3,9 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Plain Node",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "nodemon index.js",
     "format": "prettier *{js,json,css,md,html} --write ."
   },
   "author": "Kalle Kuparinen",
@@ -13,5 +13,8 @@
   "devDependencies": {
     "nodemon": "^3.1.14",
     "prettier": "^3.8.3"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
   }
 }
