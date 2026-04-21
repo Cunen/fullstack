@@ -2,6 +2,32 @@
   box-sizing: border-box;
 }
 
+header {
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ccc;
+}
+
+nav {
+  display: flex;
+}
+
+ul {
+  display: flex;
+  gap: 16px;
+  list-style: none;
+}
+
+li {
+  text-decoration: none;
+}
+
+ul li a {
+  text-decoration: none;
+}
+
 body {
   font-family: Arial, sans-serif;
   display: flex;
