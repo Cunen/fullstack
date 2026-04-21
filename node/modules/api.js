@@ -33,11 +33,17 @@ function messageEndpoint(req, res) {
 
       const data = values.map((v) => v.join(" = ")).join("\n");
 
-      fs.writeFileSync("message.txt", data);
-    });
+      fs.writeFile("./resources/message.txt", data, (err) => {
+        if (err) {
+          res.writeHead(500);
+          res.end("Error writing to file");
+          return;
+        }
 
-    res.writeHead(302, { Location: "/view/" });
-    res.end();
+        res.writeHead(302, { Location: "/view/" });
+        res.end();
+      });
+    });
   }
 }
 

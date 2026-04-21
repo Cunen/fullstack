@@ -1,3 +1,5 @@
+import fs from "fs";
+
 /** Handles incoming HTTP requests.
  * @param {http.IncomingMessage} req - The incoming request object.
  * @param {http.ServerResponse} res - The outgoing response object.
@@ -12,19 +14,9 @@ export function viewListener(req, res) {
 function defaultHTMLResponse(res) {
   res.setHeader("Content-Type", "text/html");
 
+  const html = fs.readFileSync("./resources/form.html", "utf-8");
+
   res.writeHead(200);
 
-  res.write("<html>");
-  res.write("<head><title>NODEJS</title></head>");
-  res.write("<body>");
-  res.write("<h1>ROOT</h1>");
-  res.write('<form action="/api/message" method="POST">');
-  res.write('<input type="text" name="username" id="username" />');
-  res.write('<input type="password" name="password" id="password" />');
-  res.write('<button type="submit">Send</button>');
-  res.write('</form>');
-  res.write("</body>");
-  res.write("</html>");
-
-  res.end();
+  res.end(html);
 }
