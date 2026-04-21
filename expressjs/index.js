@@ -11,14 +11,16 @@ const app = express();
 
 const server = http.createServer(app);
 
+// Add parsing for HTML forms
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(apiRouter);
+// Handle API routes
+app.use("/api", apiRouter);
 
-app.use(viewRouter);
+app.use("/view", viewRouter);
 
 // Fallback
-app.use("/", (req, res) => openHTMLTemplate("404", res));
+app.use((req, res) => openHTMLTemplate("root", res));
 
 // Listen on port 8081
 server.listen(8081, () => {

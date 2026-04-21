@@ -2,12 +2,12 @@ import express from "express";
 
 const apiRouter = express.Router();
 
-apiRouter.post("/api/user", (req, res) => {
+apiRouter.post("/user", (req, res) => {
   console.log(req.body);
   res.redirect("/view/user");
 });
 
-apiRouter.post("/api/product", (req, res) => {
+apiRouter.post("/product", (req, res) => {
   console.log(req.body);
   res.redirect("/view/product");
 });

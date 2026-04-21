@@ -4,12 +4,16 @@ import { openHTMLTemplate } from "../modules/template.js";
 
 const viewRouter = express.Router();
 
-viewRouter.get("/view/user", (req, res) => {
+viewRouter.get("/user", (req, res) => {
   openHTMLTemplate("user", res);
 });
 
-viewRouter.get("/view/product", (req, res) => {
+viewRouter.get("/product", (req, res) => {
   openHTMLTemplate("product", res);
+});
+
+viewRouter.use("/", (req, res) => {
+  openHTMLTemplate("404", res);
 });
 
 export default viewRouter;
