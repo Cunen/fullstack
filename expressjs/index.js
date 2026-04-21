@@ -10,7 +10,6 @@ import viewRouter from "./routes/views.js";
 import { openHTMLTemplate } from "./utilities/template.js";
 import { cssDir } from "./utilities/path.js";
 
-
 const __filename = fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
 
