@@ -5,11 +5,11 @@ import { products } from "./api.js";
 const viewRouter = express.Router();
 
 viewRouter.get("/user", (req, res) => {
-  res.render("handlebars/user", { page: "user", pageTitle: "Add User" });
+  res.render("user", { page: "user", pageTitle: "Add User" });
 });
 
 viewRouter.get("/product", (req, res) => {
-  res.render("handlebars/product", {
+  res.render("product", {
     products,
     page: "product",
     pageTitle: "Add Product",
@@ -17,7 +17,7 @@ viewRouter.get("/product", (req, res) => {
 });
 
 viewRouter.use("/", (req, res) => {
-  res.render("handlebars/404", { page: "404", pageTitle: "Page Not Found" });
+  res.render("404", { page: "404", pageTitle: "Page Not Found" });
 });
 
 export default viewRouter;

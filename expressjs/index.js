@@ -26,13 +26,18 @@ app.engine(
     },
   })
 );
-app.set("view engine", "handlebars");
 
-// Pug Template Engine
+/** Pick template engine, should work interchangeably
+ * Adjust template directory between handlebars, pug, and ejs as needed
+ */
+// app.set("view engine", "handlebars");
 // app.set("view engine", "pug");
+app.set("view engine", "ejs");
 
-// Template directory
-app.set("views", "views");
+/** Template directory */
+//app.set("views", "views/handlebars");
+// app.set("views", "views/pug");
+app.set("views", "views/ejs");
 
 // Add parsing for HTML forms
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -47,9 +52,7 @@ app.use("/api", apiRouter);
 app.use("/view", viewRouter);
 
 // Fallback
-app.use((req, res) =>
-  res.render("handlebars/root", { page: "root", pageTitle: "Home" })
-);
+app.use((req, res) => res.render("root", { page: "root", pageTitle: "Home" }));
 
 // Listen on port 8081
 server.listen(8081, () => {

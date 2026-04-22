@@ -1,0 +1,10 @@
+<%- include('base-top') %>
+<div class="form-wrapper">
+  <h1>A form</h1>
+  <form action="/api/user" method="POST">
+    <input type="text" name="username" id="username" />
+    <input type="password" name="password" id="password" />
+    <button type="submit">Add User</button>
+  </form>
+</div>
+<%- include('base-bottom') %>

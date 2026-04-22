@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= pageTitle || 'ExpressJS Application' %></title>
+    <link rel="stylesheet" href="/index.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li class="<% if (page === 'root') { %>active<% } %>">
+            <a href="/">Home</a>
+          </li>
+          <li class="<% if (page === 'user') { %>active<% } %>">
+            <a href="/view/user">Add User</a>
+          </li>
+          <li class="<% if (page === 'product') { %>active<% } %>">
+            <a href="/view/product">Add Product</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main>
