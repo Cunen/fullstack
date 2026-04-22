@@ -1,19 +1,19 @@
 import express from "express";
 
-import { openHTMLTemplate } from "../utilities/template.js";
+import { products } from "./api.js";
 
 const viewRouter = express.Router();
 
 viewRouter.get("/user", (req, res) => {
-  openHTMLTemplate("user", res);
+  res.render("pug/user");
 });
 
 viewRouter.get("/product", (req, res) => {
-  openHTMLTemplate("product", res);
+  res.render("pug/product", { products });
 });
 
 viewRouter.use("/", (req, res) => {
-  openHTMLTemplate("404", res);
+  res.render("pug/root");
 });
 
 export default viewRouter;

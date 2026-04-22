@@ -1,8 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
 
-import { viewsDir, cssDir } from "./path.js";
+import { viewsDir } from "./path.js";
 
+/** Manual templating before PUG was installed */
 export const openHTMLTemplate = async (file, res) => {
   // Could use sendFile for singular files
   // res.sendFile(path.join(viewsDir, `${file}.html`));
@@ -17,6 +18,6 @@ export const openHTMLTemplate = async (file, res) => {
 
     res.send(html);
   } catch (err) {
-    res.status(500).send("Error reading file");
+    res.status(500).send("Error reading file: " + err.message);
   }
 };

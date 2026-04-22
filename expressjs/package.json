@@ -12,7 +12,6 @@
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.39.4",
-    "@eslint/json": "^0.14.0",
     "eslint": "^9.39.4",
     "globals": "^17.5.0",
     "nodemon": "^3.1.14",
@@ -20,6 +19,9 @@
   },
   "dependencies": {
     "body-parser": "^2.2.2",
-    "express": "^5.2.1"
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-handlebars": "^8.0.1",
+    "pug": "^3.0.4"
   }
 }

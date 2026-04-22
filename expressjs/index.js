@@ -1,6 +1,4 @@
 import http from "http";
-import path from "path";
-import { fileURLToPath } from "url";
 import express from "express";
 import bodyParser from "body-parser";
 
@@ -10,12 +8,13 @@ import viewRouter from "./routes/views.js";
 import { openHTMLTemplate } from "./utilities/template.js";
 import { cssDir } from "./utilities/path.js";
 
-const __filename = fileURLToPath(import.meta.url);
-export const __dirname = path.dirname(__filename);
-
 const app = express();
 
 const server = http.createServer(app);
+
+// Templating engine is set to Pug
+app.set("view engine", "pug");
+app.set("views", "views");
 
 // Add parsing for HTML forms
 app.use(bodyParser.urlencoded({ extended: false }));
