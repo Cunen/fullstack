@@ -5,7 +5,6 @@ import bodyParser from "body-parser";
 import apiRouter from "./routes/api.js";
 import viewRouter from "./routes/views.js";
 
-import { openHTMLTemplate } from "./utilities/template.js";
 import { cssDir } from "./utilities/path.js";
 
 const app = express();
@@ -25,10 +24,11 @@ app.use(express.static(cssDir));
 // Handle API routes
 app.use("/api", apiRouter);
 
+// Handle view routes (HTML pages)
 app.use("/view", viewRouter);
 
 // Fallback
-app.use((req, res) => openHTMLTemplate("root", res));
+app.use((req, res) => res.render("pug/root", { page: "root" }));
 
 // Listen on port 8081
 server.listen(8081, () => {

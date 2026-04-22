@@ -2,7 +2,19 @@ import express from "express";
 
 const apiRouter = express.Router();
 
-const products = [];
+const products = [
+  {
+    name: "Phone",
+    price: 10,
+    description: "A phone",
+    inventory: 100,
+  },
+  {
+    name: "Laptop",
+    price: 100,
+    inventory: 0,
+  },
+];
 
 apiRouter.post("/user", (req, res) => {
   console.log(req.body);

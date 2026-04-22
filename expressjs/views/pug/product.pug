@@ -2,17 +2,22 @@ extends base
 
 block content
   div.form-wrapper
-    h1 A form
+    h2 Add product
     form(action="/api/product" method="POST")
       input(type="text" name="name" id="name" placeholder="name")
       input(type="text" name="price" id="price" placeholder="price")
       input(type="text" name="description" id="description" placeholder="description")
+      input(type="text" name="inventory" id="inventory" placeholder="inventory")
       button(type="submit") Add Product
 
   div.product-list
-    h2 Product List
+    h2 Products
     each product in products
       div.product-item
-        h3= product.name
-        p Price: $#{product.price}
-        p Description: #{product.description}
+        div.counter
+          p(class={out: product.inventory === 0}) #{product.inventory}
+        div.info
+          p Product: #{product.name}
+          p #{product.price}€
+          if product.description
+            p Description: #{product.description}

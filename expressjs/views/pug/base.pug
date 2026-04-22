@@ -9,11 +9,11 @@ html(lang="en")
     header
       nav
         ul
-          li
+          li(class={active: page === 'root'})
             a(href="/") Home
-          li
+          li(class={active: page === 'user'})
             a(href="/view/user") Add User
-          li
+          li(class={active: page === 'product'})
             a(href="/view/product") Add Product
     main
       block content

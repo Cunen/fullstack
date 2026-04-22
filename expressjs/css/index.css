@@ -21,7 +21,15 @@ ul {
 }
 
 li {
+  display: flex;
+  align-items: center;
   text-decoration: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+}
+
+li.active {
+  background: #ced1ef;
 }
 
 ul li a {
@@ -88,4 +96,45 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+div.product-list {
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+div.product-item {
+  display: flex;
+  gap: 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+div.product-item p {
+  margin: 0;
+  font-size: 12px;
+}
+
+div.counter {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+div.info {
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+  flex-direction: column;
+  gap: 4px;
+}
+
+p.out {
+  color: rgb(194, 0, 0);
+  font-weight: 700;
 }
