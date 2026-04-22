@@ -1,0 +1,12 @@
+<%- include('base-top') %>
+<div class="form-wrapper">
+  <h2>Edit product</h2>
+  <form action="/api/product/<%= product.id %>" method="POST">
+    <input type="text" name="name" id="name" placeholder="name" value="<%= product.name %>" />
+    <input type="text" name="price" id="price" placeholder="price" value="<%= product.price %>" />
+    <input type="text" name="description" id="description" placeholder="description" value="<%= product.description %>" />
+    <input type="text" name="inventory" id="inventory" placeholder="inventory" value="<%= product.inventory %>" />
+    <button type="submit">Update Product</button>
+  </form>
+</div>
+<%- include('base-bottom') %>

@@ -1,23 +1,23 @@
 import express from "express";
 
-import { products } from "./api.js";
+import {
+  productViewController,
+  productsViewController,
+  checkoutViewController,
+  cartViewController,
+  addProductViewController,
+  editProductViewController,
+} from "../controllers/product.js";
+import { notFoundViewController } from "../controllers/root.js";
 
 const viewRouter = express.Router();
 
-viewRouter.get("/user", (req, res) => {
-  res.render("user", { page: "user", pageTitle: "Add User" });
-});
-
-viewRouter.get("/product", (req, res) => {
-  res.render("product", {
-    products,
-    page: "product",
-    pageTitle: "Add Product",
-  });
-});
-
-viewRouter.use("/", (req, res) => {
-  res.render("404", { page: "404", pageTitle: "Page Not Found" });
-});
+viewRouter.get("/product/:id", productViewController);
+viewRouter.get("/products", productsViewController);
+viewRouter.get("/checkout", checkoutViewController);
+viewRouter.get("/cart", cartViewController);
+viewRouter.get("/add-product", addProductViewController);
+viewRouter.get("/edit-product/:id", editProductViewController);
+viewRouter.use("/", notFoundViewController);
 
 export default viewRouter;

@@ -1,36 +1,17 @@
 import express from "express";
 
+import {
+  productAddController,
+  productEditController,
+  productGetController,
+} from "../controllers/product.js";
+
 const apiRouter = express.Router();
 
-const products = [
-  {
-    name: "Phone",
-    price: 10,
-    description: "A phone",
-    inventory: 100,
-  },
-  {
-    name: "Laptop",
-    price: 100,
-    inventory: 0,
-  },
-];
+apiRouter.post("/product", productAddController);
 
-apiRouter.post("/user", (req, res) => {
-  console.log(req.body);
-  res.redirect("/view/user");
-});
+apiRouter.post("/product/:id", productEditController);
 
-apiRouter.post("/product", (req, res) => {
-  const product = req.body;
-  products.push(product);
-  res.redirect("/view/product");
-});
-
-apiRouter.get("/products", (req, res) => {
-  res.json(products);
-});
+apiRouter.get("/products", productGetController);
 
 export default apiRouter;
-
-export { products };

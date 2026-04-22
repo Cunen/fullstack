@@ -7,6 +7,7 @@ import apiRouter from "./routes/api.js";
 import viewRouter from "./routes/views.js";
 
 import { cssDir } from "./utilities/path.js";
+import { rootViewController } from "./controllers/root.js";
 
 const app = express();
 
@@ -52,7 +53,7 @@ app.use("/api", apiRouter);
 app.use("/view", viewRouter);
 
 // Fallback
-app.use((req, res) => res.render("root", { page: "root", pageTitle: "Home" }));
+app.use(rootViewController);
 
 // Listen on port 8081
 server.listen(8081, () => {
