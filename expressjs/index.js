@@ -1,6 +1,7 @@
 import http from "http";
 import express from "express";
 import bodyParser from "body-parser";
+import { engine } from "express-handlebars";
 
 import apiRouter from "./routes/api.js";
 import viewRouter from "./routes/views.js";
@@ -11,8 +12,26 @@ const app = express();
 
 const server = http.createServer(app);
 
-// Templating engine is set to Pug
-app.set("view engine", "pug");
+// Handlebars Template Engine
+app.engine(
+  "handlebars",
+  engine({
+    layoutsDir: "./views",
+    defaultLayout: "./handlebars/base",
+    extname: "handlebars",
+    helpers: {
+      eq: (a, b) => a === b, // Custom helper for comparisons
+      classComp: (a, b, match, fallback) =>
+        a === b ? match : (fallback ?? ""),
+    },
+  })
+);
+app.set("view engine", "handlebars");
+
+// Pug Template Engine
+// app.set("view engine", "pug");
+
+// Template directory
 app.set("views", "views");
 
 // Add parsing for HTML forms
@@ -28,7 +47,9 @@ app.use("/api", apiRouter);
 app.use("/view", viewRouter);
 
 // Fallback
-app.use((req, res) => res.render("pug/root", { page: "root" }));
+app.use((req, res) =>
+  res.render("handlebars/root", { page: "root", pageTitle: "Home" })
+);
 
 // Listen on port 8081
 server.listen(8081, () => {

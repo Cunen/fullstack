@@ -1,0 +1,38 @@
+<div class="form-wrapper">
+  <h2>Add product</h2>
+  <form action="/api/product" method="POST">
+    <input type="text" name="name" id="name" placeholder="name" />
+    <input type="text" name="price" id="price" placeholder="price" />
+    <input
+      type="text"
+      name="description"
+      id="description"
+      placeholder="description"
+    />
+    <input
+      type="text"
+      name="inventory"
+      id="inventory"
+      placeholder="inventory"
+    />
+    <button type="submit">Add Product</button>
+  </form>
+</div>
+
+<div class="product-list">
+  <h2>Products</h2>
+  {{#each products}}
+    <div class="product-item">
+      <div class="counter">
+        <p class="{{classComp inventory 0 'out' 'ok'}}">{{inventory}}</p>
+      </div>
+      <div class="info">
+        <p>Product: {{name}}</p>
+        <p>{{price}}€</p>
+        {{#if description}}
+          <p>Description: {{description}}</p>
+        {{/if}}
+      </div>
+    </div>
+  {{/each}}
+</div>
