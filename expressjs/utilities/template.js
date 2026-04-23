@@ -3,7 +3,7 @@ import path from "path";
 
 import { viewsDir } from "./path.js";
 
-/** Manual templating before PUG was installed */
+/** Manual templating before template engines were installed */
 export const openHTMLTemplate = async (file, res) => {
   // Could use sendFile for singular files
   // res.sendFile(path.join(viewsDir, `${file}.html`));

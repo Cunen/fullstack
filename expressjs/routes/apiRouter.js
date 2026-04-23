@@ -15,12 +15,12 @@ import {
 const apiRouter = express.Router();
 
 apiRouter.post("/product", productAddController);
-apiRouter.post("/product/:id", productEditController);
-apiRouter.post("/product/delete/:id", productDeleteController);
+apiRouter.post("/product/edit", productEditController);
+apiRouter.post("/product/delete", productDeleteController);
 
-apiRouter.post("/cart/add/:id", cartAddController);
-apiRouter.post("/cart/edit/:id", cartEditController);
-apiRouter.post("/cart/remove/:id", cartRemoveController);
+apiRouter.post("/cart/add", cartAddController);
+apiRouter.post("/cart/edit", cartEditController);
+apiRouter.post("/cart/remove", cartRemoveController);
 
 apiRouter.get("/products", productGetController);
 

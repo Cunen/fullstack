@@ -26,6 +26,7 @@ export class Product {
 
   static delete(id) {
     const allProducts = Product.getAll().filter((product) => product.id !== id);
+    console.log(allProducts);
     fs.writeFileSync(
       "data/products.json",
       JSON.stringify(allProducts, null, 2)

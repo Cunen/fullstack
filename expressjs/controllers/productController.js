@@ -53,18 +53,15 @@ export const productAddController = (req, res) => {
 };
 
 export const productEditController = (req, res) => {
-  const { name, price, description, inventory } = req.body;
-
-  const id = req.params.id;
-
-  Product.update(id, name, price, description, inventory);
-
+  const { name, price, description, inventory, productId } = req.body;
+  Product.update(productId, name, price, description, inventory);
   res.redirect("/view/products");
 };
 
 export const productDeleteController = (req, res) => {
-  const id = req.params.id;
-  Product.delete(id);
+  const { productId } = req.body;
+  console.log("Deleting product with ID:", productId);
+  Product.delete(productId);
   res.redirect("/view/products");
 };
 

@@ -9,21 +9,19 @@ export const cartViewController = (req, res) => {
 };
 
 export const cartAddController = (req, res) => {
-  const id = req.params.id;
-  const { count } = req.body;
-  Product.addToCart(id, count);
+  const { productId, count } = req.body;
+  Product.addToCart(productId, count);
   res.redirect("/view/cart");
 };
 
 export const cartEditController = (req, res) => {
-  const id = req.params.id;
-  const { count } = req.body;
-  Product.editCartCount(id, count);
+  const { productId, count } = req.body;
+  Product.editCartCount(productId, count);
   res.redirect("/view/cart");
 };
 
 export const cartRemoveController = (req, res) => {
-  const id = req.params.id;
-  Product.removeFromCart(id);
+  const { productId } = req.body;
+  Product.removeFromCart(productId);
   res.redirect("/view/cart");
 };

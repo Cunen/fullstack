@@ -13,16 +13,18 @@
         </div>
         <div class="total">Total: <%= product.price * product.count %>€</div>
       </div>
-      <form action="/api/cart/edit/<%= product.id %>" method="POST">
+      <form action="/api/cart/edit" method="POST">
+        <input type="hidden" name="productId" value="<%= product.id %>" />
         <input type="number" name="count" id="count" value="<%= product.count %>" min="1" max="<%= product.inventory %>" />
         <button type="submit">Update Count</button>
       </form>
 
-      <form action="/api/cart/remove/<%= product.id %>" method="POST">
+      <form action="/api/cart/remove" method="POST">
+        <input type="hidden" name="productId" value="<%= product.id %>" />
         <button type="submit">Delete</button>
       </form>
     <% }); %>
   <% } %>
 </div>
-<a href="/view/checkout">Go to checkout</a>
+<a href="/view/checkout"><button>Go to checkout</button></a>
 <%- include('base-bottom') %>

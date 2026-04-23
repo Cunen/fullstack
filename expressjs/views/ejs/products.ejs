@@ -13,7 +13,9 @@
           <% if (product.description) { %>
             <p>Description: <%= product.description %></p>
           <% } %>
-          <a href="/view/product/<%= product.id %>">View Product</a>
+          <a href="/view/product/<%= product.id %>">
+            <button>View Product</button>
+          </a>
         </div>
       </div>
     <% }); %>
