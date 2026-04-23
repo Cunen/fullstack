@@ -7,3 +7,16 @@ export const checkoutViewController = (req, res) => {
     pageTitle: "Checkout",
   });
 };
+
+export const checkoutController = (req, res) => {
+  const { products } = req.body;
+
+  const productsList = products.split(";").map((item) => {
+    const [productId, count] = item.split(" ");
+    return { productId, count };
+  });
+
+  Product.checkoutCartItems(productsList);
+
+  res.redirect("/view/products");
+};

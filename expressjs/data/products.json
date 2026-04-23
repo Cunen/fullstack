@@ -11,6 +11,6 @@
     "name": "Laptop",
     "price": "1000",
     "description": "A nice laptop",
-    "inventory": "40"
+    "inventory": 39
   }
 ]

@@ -72,6 +72,10 @@ export class Product {
     fs.writeFileSync("data/cart.json", JSON.stringify(cart, null, 2));
   }
 
+  static clearCart() {
+    fs.writeFileSync("data/cart.json", JSON.stringify([], null, 2));
+  }
+
   static getCart() {
     const data = fs.readFileSync("data/cart.json", "utf-8");
     return JSON.parse(data);
@@ -88,5 +92,27 @@ export class Product {
         count: item.count,
       };
     });
+  }
+
+  // Checkout
+  static checkoutCartItems(cartProducts) {
+    const newProducts = Product.getAll()
+      .map((product) => {
+        const cartItem = cartProducts.find(
+          (item) => item.productId === product.id
+        );
+        if (!cartItem) return product;
+        const newInventory = Number(product.inventory) - Number(cartItem.count);
+        if (newInventory <= 0) return null;
+        product.inventory = newInventory;
+        return product;
+      })
+      .filter(Boolean);
+
+    Product.clearCart();
+    fs.writeFileSync(
+      "data/products.json",
+      JSON.stringify(newProducts, null, 2)
+    );
   }
 }
