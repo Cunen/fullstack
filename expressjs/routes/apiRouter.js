@@ -4,7 +4,6 @@ import {
   productAddController,
   productDeleteController,
   productEditController,
-  productGetController,
 } from "../controllers/productController.js";
 import {
   cartAddController,
@@ -24,7 +23,5 @@ apiRouter.post("/cart/edit", cartEditController);
 apiRouter.post("/cart/remove", cartRemoveController);
 
 apiRouter.post("/checkout", checkoutController);
-
-apiRouter.get("/products", productGetController);
 
 export default apiRouter;

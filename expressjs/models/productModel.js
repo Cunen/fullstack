@@ -1,4 +1,4 @@
-import fs from "fs";
+import pool from "../utilities/database.js";
 
 export class Product {
   constructor(name, price, description, inventory) {
@@ -9,110 +9,126 @@ export class Product {
     this.inventory = inventory;
   }
 
-  save() {
-    const products = Product.getAll();
-    products.push(this);
-    fs.writeFileSync("data/products.json", JSON.stringify(products, null, 2));
+  async save() {
+    return pool
+      .execute(
+        "INSERT INTO products (id, name, price, description, inventory) VALUES (?, ?, ?, ?, ?)",
+        [this.id, this.name, this.price, this.description, this.inventory]
+      )
+      .then(() => true)
+      .catch((e) => {
+        console.error(e);
+        return false;
+      });
   }
 
-  static update(id, name, price, description, inventory) {
-    const allProducts = Product.getAll().filter((product) => product.id !== id);
-    allProducts.push(new Product(name, price, description, inventory));
-    fs.writeFileSync(
-      "data/products.json",
-      JSON.stringify(allProducts, null, 2)
-    );
+  static async update(id, name, price, description, inventory) {
+    return pool
+      .execute(
+        "UPDATE products SET name = ?, price = ?, description = ?, inventory = ? WHERE id = ?",
+        [name, price, description, inventory, id]
+      )
+      .then(() => true)
+      .catch(() => false);
   }
 
-  static delete(id) {
-    const allProducts = Product.getAll().filter((product) => product.id !== id);
-    console.log(allProducts);
-    fs.writeFileSync(
-      "data/products.json",
-      JSON.stringify(allProducts, null, 2)
-    );
+  static async delete(id) {
+    return pool
+      .execute("DELETE FROM products WHERE id = ?", [id])
+      .then(() => true)
+      .catch(() => false);
   }
 
-  static getAll() {
-    const data = fs.readFileSync("data/products.json", "utf-8");
-    return JSON.parse(data);
+  static async getAll() {
+    return pool
+      .execute("SELECT * FROM products")
+      .then(([result]) => result)
+      .catch(() => []);
   }
 
-  static getById(id) {
-    const products = Product.getAll();
-    return products.find((product) => product.id === id) ?? null;
+  static async getById(id) {
+    return pool
+      .execute("SELECT * FROM products WHERE id = ?", [id])
+      .then(([[result]]) => result)
+      .catch(() => []);
   }
 
   // Shopping Cart
-  static addToCart(productId, count = 1) {
-    const cart = Product.getCart();
-    cart.push({ productId, count });
-    fs.writeFileSync("data/cart.json", JSON.stringify(cart, null, 2));
+  static async addToCart(productId, count = 1) {
+    return pool
+      .execute("INSERT INTO cart (productId, count) VALUES (?, ?)", [
+        Number(productId),
+        Number(count),
+      ])
+      .then(() => true)
+      .catch(() => false);
   }
 
-  static editCartCount(productId, count) {
-    const cart = Product.getCart();
-
+  static async editCartCount(productId, count) {
     if (count <= 0) {
-      Product.removeFromCart(productId);
-      return;
+      return Product.removeFromCart(productId);
     }
 
-    const item = cart.find((item) => item.productId === productId);
-    if (item) {
-      item.count = count;
-      fs.writeFileSync("data/cart.json", JSON.stringify(cart, null, 2));
-    }
+    return pool
+      .execute("UPDATE cart SET count = ? WHERE productId = ?", [
+        Number(count),
+        Number(productId),
+      ])
+      .then(() => true)
+      .catch(() => false);
   }
 
-  static removeFromCart(productId) {
-    const cart = Product.getCart().filter(
-      (item) => item.productId !== productId
-    );
-    fs.writeFileSync("data/cart.json", JSON.stringify(cart, null, 2));
+  static async removeFromCart(productId) {
+    return pool
+      .execute("DELETE FROM cart WHERE productId = ?", [Number(productId)])
+      .then(() => true)
+      .catch(() => false);
   }
 
-  static clearCart() {
-    fs.writeFileSync("data/cart.json", JSON.stringify([], null, 2));
+  static async clearCart() {
+    return pool
+      .execute("DELETE FROM cart")
+      .then(() => true)
+      .catch(() => false);
   }
 
-  static getCart() {
-    const data = fs.readFileSync("data/cart.json", "utf-8");
-    return JSON.parse(data);
+  static async getCart() {
+    return pool
+      .execute("SELECT * FROM cart")
+      .then(([result]) => result)
+      .catch(() => []);
   }
 
-  static getCartProducts() {
-    const products = Product.getAll();
-    const cart = Product.getCart();
-
-    return cart.map((item) => {
-      const product = products.find((p) => p.id === item.productId);
-      return {
-        ...product,
-        count: item.count,
-      };
+  static async getCartProducts() {
+    return Product.getAll().then((products) => {
+      return Product.getCart().then((cart) => {
+        return cart.map((item) => {
+          const product = products.find((p) => p.id === item.productId);
+          return { ...product, count: item.count };
+        });
+      });
     });
   }
 
   // Checkout
-  static checkoutCartItems(cartProducts) {
-    const newProducts = Product.getAll()
-      .map((product) => {
-        const cartItem = cartProducts.find(
-          (item) => item.productId === product.id
-        );
-        if (!cartItem) return product;
-        const newInventory = Number(product.inventory) - Number(cartItem.count);
-        if (newInventory <= 0) return null;
-        product.inventory = newInventory;
-        return product;
-      })
-      .filter(Boolean);
+  static async checkoutCartItems(cartProducts) {
+    const updates = cartProducts.map((item) => {
+      return pool.execute(
+        "UPDATE products SET inventory = inventory - ? WHERE id = ?",
+        [item.count, item.productId]
+      );
+    });
 
-    Product.clearCart();
-    fs.writeFileSync(
-      "data/products.json",
-      JSON.stringify(newProducts, null, 2)
-    );
+    return Promise.all(updates).then(() => {
+      return pool
+        .execute("DELETE FROM products WHERE inventory <= 0")
+        .then(() => {
+          return Product.clearCart();
+        })
+        .catch((e) => {
+          console.error(e);
+          return false;
+        });
+    });
   }
 }

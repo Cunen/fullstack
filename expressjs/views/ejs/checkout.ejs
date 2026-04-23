@@ -20,7 +20,6 @@
   <% } %>
 </div>
 <form action="/api/checkout" method="POST">
-  <input type="hidden" name="products" value='<%= products.map(p => `${p.id} ${p.count}`).join(";") %>' />
   <button type="submit">Confirm checkout</button>
 </form>
 <a href="/view/cart"><button>Back to cart</button></a>

@@ -1,27 +1,32 @@
 import { Product } from "../models/productModel.js";
 
 export const cartViewController = (req, res) => {
-  res.render("cart", {
-    products: Product.getCartProducts(),
-    page: "cart",
-    pageTitle: "Cart",
+  Product.getCartProducts().then((products) => {
+    res.render("cart", {
+      products,
+      page: "cart",
+      pageTitle: "Cart",
+    });
   });
 };
 
 export const cartAddController = (req, res) => {
   const { productId, count } = req.body;
-  Product.addToCart(productId, count);
-  res.redirect("/view/cart");
+  Product.addToCart(productId, count).then(() => {
+    res.redirect("/view/cart");
+  });
 };
 
 export const cartEditController = (req, res) => {
   const { productId, count } = req.body;
-  Product.editCartCount(productId, count);
-  res.redirect("/view/cart");
+  Product.editCartCount(productId, count).then(() => {
+    res.redirect("/view/cart");
+  });
 };
 
 export const cartRemoveController = (req, res) => {
   const { productId } = req.body;
-  Product.removeFromCart(productId);
-  res.redirect("/view/cart");
+  Product.removeFromCart(productId).then(() => {
+    res.redirect("/view/cart");
+  });
 };
