@@ -23,22 +23,6 @@ export const productsViewController = (req, res) => {
   });
 };
 
-export const checkoutViewController = (req, res) => {
-  res.render("checkout", {
-    products: Product.getAll(),
-    page: "checkout",
-    pageTitle: "Checkout",
-  });
-};
-
-export const cartViewController = (req, res) => {
-  res.render("cart", {
-    products: Product.getAll(),
-    page: "cart",
-    pageTitle: "Cart",
-  });
-};
-
 export const addProductViewController = (req, res) => {
   res.render("add-product", {
     page: "add-product",
@@ -70,11 +54,17 @@ export const productAddController = (req, res) => {
 
 export const productEditController = (req, res) => {
   const { name, price, description, inventory } = req.body;
-  
+
   const id = req.params.id;
 
   Product.update(id, name, price, description, inventory);
 
+  res.redirect("/view/products");
+};
+
+export const productDeleteController = (req, res) => {
+  const id = req.params.id;
+  Product.delete(id);
   res.redirect("/view/products");
 };
 

@@ -1,16 +1,16 @@
 [
   {
-    "id": "1776858287777",
-    "name": "Book",
-    "price": "10",
-    "description": "A nice book",
-    "inventory": "12"
-  },
-  {
     "id": "1776860268799",
     "name": "Laptop",
     "price": "1000",
     "description": "A nice laptop",
     "inventory": "0"
+  },
+  {
+    "id": "1776920513195",
+    "name": "Book",
+    "price": "10",
+    "description": "A nice book",
+    "inventory": "12"
   }
 ]

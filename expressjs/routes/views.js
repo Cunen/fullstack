@@ -3,12 +3,12 @@ import express from "express";
 import {
   productViewController,
   productsViewController,
-  checkoutViewController,
-  cartViewController,
   addProductViewController,
   editProductViewController,
 } from "../controllers/product.js";
 import { notFoundViewController } from "../controllers/root.js";
+import { cartViewController } from "../controllers/cart.js";
+import { checkoutViewController } from "../controllers/checkout.js";
 
 const viewRouter = express.Router();
 

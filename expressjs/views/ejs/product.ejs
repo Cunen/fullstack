@@ -12,6 +12,13 @@
         <p>Description: <%= product.description %></p>
       <% } %>
       <a href="/view/edit-product/<%= product.id %>">Edit Product</a>
+       
+      <% if (product.inventory > 0) { %>
+        <form action="/api/cart/add/<%= product.id %>" method="POST">
+          <input type="number" name="count" id="count" value="1" min="1" max="<%= product.inventory %>" />
+          <button type="submit">Add to Cart</button>
+        </form>
+      <% } %>
     </div>
   </div>
 </div>
