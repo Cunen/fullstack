@@ -1,8 +1,14 @@
 import { Product } from "../models/productModel.js";
 
 export const checkoutViewController = (req, res) => {
+  const products = Product.getCartProducts();
+  const total = products.reduce(
+    (acc, product) => acc + product.price * product.count,
+    0
+  );
   res.render("checkout", {
-    products: Product.getCartProducts(),
+    products,
+    total,
     page: "checkout",
     pageTitle: "Checkout",
   });

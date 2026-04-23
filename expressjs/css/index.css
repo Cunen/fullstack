@@ -84,7 +84,7 @@ button {
   flex: 0 1 auto;
   height: 32px;
   min-height: 32px;
-  width: 256px;
+  width: fit-content;
   padding: 0px 16px;
   align-items: center;
   justify-content: center;
