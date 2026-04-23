@@ -3,11 +3,11 @@ import express from "express";
 import bodyParser from "body-parser";
 import { engine } from "express-handlebars";
 
-import apiRouter from "./routes/api.js";
-import viewRouter from "./routes/views.js";
+import apiRouter from "./routes/apiRouter.js";
+import viewRouter from "./routes/viewRouter.js";
 
 import { cssDir } from "./utilities/path.js";
-import { rootViewController } from "./controllers/root.js";
+import { rootViewController } from "./controllers/rootController.js";
 
 const app = express();
 

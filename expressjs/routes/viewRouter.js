@@ -5,10 +5,10 @@ import {
   productsViewController,
   addProductViewController,
   editProductViewController,
-} from "../controllers/product.js";
-import { notFoundViewController } from "../controllers/root.js";
-import { cartViewController } from "../controllers/cart.js";
-import { checkoutViewController } from "../controllers/checkout.js";
+} from "../controllers/productController.js";
+import { notFoundViewController } from "../controllers/rootController.js";
+import { cartViewController } from "../controllers/cartController.js";
+import { checkoutViewController } from "../controllers/checkoutController.js";
 
 const viewRouter = express.Router();
 

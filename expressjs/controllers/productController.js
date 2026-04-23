@@ -1,4 +1,4 @@
-import { Product } from "../models/product.js";
+import { Product } from "../models/productModel.js";
 
 export const productViewController = (req, res, next) => {
   const id = req.params.id;

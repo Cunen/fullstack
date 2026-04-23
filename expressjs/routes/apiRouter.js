@@ -5,12 +5,12 @@ import {
   productDeleteController,
   productEditController,
   productGetController,
-} from "../controllers/product.js";
+} from "../controllers/productController.js";
 import {
   cartAddController,
   cartEditController,
   cartRemoveController,
-} from "../controllers/cart.js";
+} from "../controllers/cartController.js";
 
 const apiRouter = express.Router();
 
