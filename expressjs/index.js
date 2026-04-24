@@ -8,6 +8,7 @@ import viewRouter from "./routes/viewRouter.js";
 
 import { cssDir } from "./utilities/path.js";
 import { rootViewController } from "./controllers/rootController.js";
+import { sequelize } from "./utilities/database.js";
 
 const app = express();
 
@@ -55,7 +56,16 @@ app.use("/view", viewRouter);
 // Fallback
 app.use(rootViewController);
 
+// Initialize Sequelize connection
+sequelize
+  .sync()
+  .then(() => {
+    server.listen(8081, () => {
+      console.log("Server is running on http://localhost:8081");
+    });
+  })
+  .catch((err) => {
+    console.error("Error connecting to the database:", err);
+  });
+
 // Listen on port 8081
-server.listen(8081, () => {
-  console.log("Server is running on http://localhost:8081");
-});
