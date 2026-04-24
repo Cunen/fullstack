@@ -2,6 +2,7 @@ import http from "http";
 import express from "express";
 import bodyParser from "body-parser";
 import { engine } from "express-handlebars";
+import process from "process";
 
 import apiRouter from "./routes/apiRouter.js";
 import viewRouter from "./routes/viewRouter.js";
@@ -68,6 +69,10 @@ mongo
     sequelize
       .sync({ force: false }) // Set to true to reset tables on every start
       .then(() => {
+        // Register express-db for future use
+        const db = mongo.db("express-db");
+        app.set("mongodb", db);
+
         server.listen(8081, () => {
           console.log("Server is running on http://localhost:8081");
         });
@@ -80,4 +85,13 @@ mongo
     console.error("Error connecting to MongoDB:", err);
   });
 
+const shutdown = () => {
+  mongo.close(false, () => {
+    console.log("MongoDB connection closed.");
+  });
+};
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);
+process.on("SIGHUP", shutdown);
 // Listen on port 8081
