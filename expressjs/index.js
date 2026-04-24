@@ -8,7 +8,7 @@ import viewRouter from "./routes/viewRouter.js";
 
 import { cssDir } from "./utilities/path.js";
 import { rootViewController } from "./controllers/rootController.js";
-import { sequelize } from "./utilities/database.js";
+import { mongo, sequelize } from "./utilities/database.js";
 import { authController } from "./controllers/authContoller.js";
 
 const app = express();
@@ -60,16 +60,24 @@ app.use("/view", viewRouter);
 // Fallback
 app.use(rootViewController);
 
-// Initialize Sequelize connection
-sequelize
-  .sync({ force: false }) // Set to true to reset tables on every start
+// Connect to MongoDB
+mongo
+  .connect()
   .then(() => {
-    server.listen(8081, () => {
-      console.log("Server is running on http://localhost:8081");
-    });
+    // Connect to MySQL through Sequelize
+    sequelize
+      .sync({ force: false }) // Set to true to reset tables on every start
+      .then(() => {
+        server.listen(8081, () => {
+          console.log("Server is running on http://localhost:8081");
+        });
+      })
+      .catch((err) => {
+        console.error("Error connecting to the database:", err);
+      });
   })
   .catch((err) => {
-    console.error("Error connecting to the database:", err);
+    console.error("Error connecting to MongoDB:", err);
   });
 
 // Listen on port 8081

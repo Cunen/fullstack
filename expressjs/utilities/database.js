@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import process from "process";
 import { Sequelize } from "sequelize";
 import { getSequelizeModels } from "../models/sequelizeModel.js";
+import { MongoClient, ServerApiVersion } from "mongodb";
 
 dotenv.config({ path: ".env.local" });
 
@@ -29,6 +30,20 @@ const sequelize = new Sequelize("expressjs", user, password, {
 const { SeqProduct, SeqCartItems, SeqUser, SeqOrders, SeqOrderItems } =
   getSequelizeModels(sequelize);
 
+/** MongoDB Connection
+ * Database: node-learning
+ * Username: MONGO_USERNAME from .env.local
+ * Password: MONGO_PASSWORD from .env.local
+ */
+const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@node-learning.dqcpedh.mongodb.net/?appName=node-learning`;
+const mongo = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
+
 export {
   mysqlDb,
   sequelize,
@@ -37,4 +52,5 @@ export {
   SeqUser,
   SeqOrders,
   SeqOrderItems,
+  mongo,
 };
