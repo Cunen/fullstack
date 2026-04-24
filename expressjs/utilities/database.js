@@ -4,6 +4,7 @@ import process from "process";
 import { Sequelize } from "sequelize";
 import { getSequelizeModels } from "../models/sequelizeModel.js";
 import { MongoClient, ServerApiVersion } from "mongodb";
+import { STATUS_CODES } from "http";
 
 dotenv.config({ path: ".env.local" });
 
@@ -43,6 +44,26 @@ const mongo = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
+/** MongoDB Database Instance */
+let mongodb;
+const connectToMongo = async () => {
+  try {
+    await mongo.connect();
+    mongodb = mongo.db("express-db");
+    return STATUS_CODES[200];
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+    return STATUS_CODES[500];
+  }
+};
+const shutdown = () => {
+  mongo.close(false, () => {
+    console.log("MongoDB connection closed.");
+  });
+};
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);
+process.on("SIGHUP", shutdown);
 
 export {
   mysqlDb,
@@ -52,5 +73,6 @@ export {
   SeqUser,
   SeqOrders,
   SeqOrderItems,
-  mongo,
+  mongodb,
+  connectToMongo,
 };

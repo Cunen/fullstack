@@ -1,9 +1,8 @@
-import { SeqUser } from "../utilities/database.js";
+import { mongodb, SeqUser } from "../utilities/database.js";
 
 export const authController = (req, res, next) => {
   // MongoDB Login
-  const db = req.app.get("mongodb");
-  const usersCollection = db.collection("users");
+  const usersCollection = mongodb.collection("users");
   usersCollection.findOne({ username: "cunen" }).then((user) => {
     if (!user) {
       usersCollection
