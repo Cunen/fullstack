@@ -62,7 +62,7 @@ app.use(rootViewController);
 
 // Initialize Sequelize connection
 sequelize
-  .sync()
+  .sync({ force: false }) // Set to true to reset tables on every start
   .then(() => {
     server.listen(8081, () => {
       console.log("Server is running on http://localhost:8081");

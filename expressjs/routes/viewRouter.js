@@ -8,13 +8,17 @@ import {
 } from "../controllers/productController.js";
 import { notFoundViewController } from "../controllers/rootController.js";
 import { cartViewController } from "../controllers/cartController.js";
-import { checkoutViewController } from "../controllers/checkoutController.js";
+import {
+  checkoutViewController,
+  orderViewController,
+} from "../controllers/checkoutController.js";
 
 const viewRouter = express.Router();
 
 viewRouter.get("/product/:id", productViewController);
 viewRouter.get("/products", productsViewController);
 viewRouter.get("/checkout", checkoutViewController);
+viewRouter.get("/orders", orderViewController);
 viewRouter.get("/cart", cartViewController);
 viewRouter.get("/add-product", addProductViewController);
 viewRouter.get("/edit-product/:id", editProductViewController);

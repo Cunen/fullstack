@@ -1,0 +1,19 @@
+<%- include('base-top') %>
+<div class="product-list">
+  <h2>My Orders</h2>
+  <% orders.forEach(order => { %>
+    <div class="order-item">
+      <p>Order ID: <%= order.id %></p>
+    </div>
+    <h3>Products:</h3>
+    <% order.seq_order_items.forEach(item => { %>
+      <div class="order-item">
+        <p>Product ID: <%= item.seq_product.id %></p>
+        <p>Product Name: <%= item.seq_product.name %></p>
+        <p>Product Price: <%= item.seq_product.price %></p>
+        <p>Quantity: <%= item.count %></p>
+      </div>
+    <% }) %>
+  <% }) %>
+</div>
+<%- include('base-bottom') %>
