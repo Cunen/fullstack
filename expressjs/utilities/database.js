@@ -26,6 +26,6 @@ const sequelize = new Sequelize("expressjs", user, password, {
   dialect: "mysql",
 });
 
-const { SeqProduct, SeqCart } = getSequelizeModels(sequelize);
+const { SeqProduct, SeqCartItems, SeqUser } = getSequelizeModels(sequelize);
 
-export { mysqlDb, sequelize, SeqProduct, SeqCart };
+export { mysqlDb, sequelize, SeqProduct, SeqCartItems, SeqUser };

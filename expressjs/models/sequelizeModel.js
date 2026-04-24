@@ -26,18 +26,41 @@ export const getSequelizeModels = (sequelize) => {
     },
   });
 
-  const SeqCart = sequelize.define("seq_cart", {
-    productId: {
-      type: Sequelize.BIGINT,
+  const SeqUser = sequelize.define("seq_users", {
+    id: {
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
       unique: true,
       allowNull: false,
-      references: {
-        model: SeqProduct,
-        key: "id",
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
-      },
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    username: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    passwordHash: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+  });
+
+  const SeqCartItems = sequelize.define("seq_cart_items", {
+    id: {
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+      unique: true,
+      allowNull: false,
     },
     count: {
       type: Sequelize.INTEGER,
@@ -45,5 +68,20 @@ export const getSequelizeModels = (sequelize) => {
     },
   });
 
-  return { SeqProduct, SeqCart };
+  // One user has many cart items
+  SeqCartItems.belongsTo(SeqUser, {
+    constraints: true,
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+  SeqUser.hasMany(SeqCartItems);
+
+  SeqCartItems.belongsTo(SeqProduct, {
+    constraints: true,
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+  SeqProduct.hasMany(SeqCartItems);
+
+  return { SeqProduct, SeqCartItems, SeqUser };
 };

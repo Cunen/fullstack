@@ -9,6 +9,7 @@ import viewRouter from "./routes/viewRouter.js";
 import { cssDir } from "./utilities/path.js";
 import { rootViewController } from "./controllers/rootController.js";
 import { sequelize } from "./utilities/database.js";
+import { authController } from "./controllers/authContoller.js";
 
 const app = express();
 
@@ -46,6 +47,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // CSS directory is registered as a public directory
 app.use(express.static(cssDir));
+
+// Authorization middleware
+app.use(authController);
 
 // Handle API routes
 app.use("/api", apiRouter);

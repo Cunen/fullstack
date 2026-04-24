@@ -1,7 +1,7 @@
 import { Product } from "../models/productModel.js";
 
 export const checkoutViewController = (req, res) => {
-  Product.getCartProducts().then((products) => {
+  Product.getCartProducts(req.loggedInUser.id).then((products) => {
     const total = products.reduce(
       (acc, product) => acc + product.price * product.count,
       0
@@ -16,8 +16,8 @@ export const checkoutViewController = (req, res) => {
 };
 
 export const checkoutController = (req, res) => {
-  Product.getCart().then((cartItems) => {
-    Product.checkoutCartItems(cartItems).then(() => {
+  Product.getCart(req.loggedInUser.id).then((cartItems) => {
+    Product.checkoutCartItems(cartItems, req.loggedInUser.id).then(() => {
       res.redirect("/view/products");
     });
   });

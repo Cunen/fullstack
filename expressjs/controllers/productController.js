@@ -17,6 +17,7 @@ export const productViewController = (req, res, next) => {
 };
 
 export const productsViewController = (req, res) => {
+  console.log(req.loggedInUser);
   Product.getAll().then((products) => {
     res.render("products", {
       products,
@@ -57,15 +58,15 @@ export const productAddController = (req, res) => {
 };
 
 export const productEditController = (req, res) => {
-  const { name, price, description, inventory, productId } = req.body;
-  Product.update(productId, name, price, description, inventory).then(() => {
+  const { name, price, description, inventory, seqProductId } = req.body;
+  Product.update(seqProductId, name, price, description, inventory).then(() => {
     res.redirect("/view/products");
   });
 };
 
 export const productDeleteController = (req, res) => {
-  const { productId } = req.body;
-  Product.delete(productId).then(() => {
+  const { seqProductId } = req.body;
+  Product.delete(seqProductId).then(() => {
     res.redirect("/view/products");
   });
 };
