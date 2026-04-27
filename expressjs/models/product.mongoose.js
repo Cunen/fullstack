@@ -9,6 +9,6 @@ const productSchema = new Schema({
   inventory: { type: Number, required: true },
 });
 
-const Product = model("product", productSchema);
+const MongooseProduct = model("product", productSchema);
 
-export default Product;
+export default MongooseProduct;

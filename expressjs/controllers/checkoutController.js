@@ -1,4 +1,4 @@
-import { Cart, Order, Product } from "../utilities/database.js";
+import { Cart, Order, Product } from "./databaseController.js";
 
 export const checkoutViewController = async (req, res) => {
   const cart = await Cart.findOne({ userId: req.loggedInUser._id }).populate(

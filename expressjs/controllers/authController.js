@@ -1,4 +1,4 @@
-import { User } from "../utilities/database.js";
+import { User } from "./databaseController.js";
 
 export const authController = (req, res, next) => {
   // Mongoose Login

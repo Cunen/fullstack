@@ -16,6 +16,6 @@ const orderSchema = new Schema({
   items: [orderItemSchema],
 });
 
-const Order = model("order", orderSchema);
+const MongooseOrder = model("order", orderSchema);
 
-export default Order;
+export default MongooseOrder;

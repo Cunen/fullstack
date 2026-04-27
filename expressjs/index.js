@@ -7,8 +7,8 @@ import viewRouter from "./routes/viewRouter.js";
 
 import { cssDir } from "./utilities/path.js";
 import { rootViewController } from "./controllers/rootController.js";
-import { connectWithMongoose } from "./utilities/database.js";
-import { authController } from "./controllers/authContoller.js";
+import { authController } from "./controllers/authController.js";
+import { connectWithMongoose } from "./controllers/databaseController.js";
 
 const app = express();
 

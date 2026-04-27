@@ -1,4 +1,4 @@
-import { Cart } from "../utilities/database.js";
+import { Cart } from "./databaseController.js";
 
 export const cartViewController = (req, res) => {
   Cart.findOne({ userId: req.loggedInUser._id })

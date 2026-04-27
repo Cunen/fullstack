@@ -1,7 +1,11 @@
 import dotenv from "dotenv";
 import process from "process";
 import mongoose from "mongoose";
-import { loadModels } from "../models/index.mongoose.js";
+
+import MongooseUser from "../models/user.mongoose.js";
+import MongooseProduct from "../models/product.mongoose.js";
+import MongooseCart from "../models/cart.mongoose.js";
+import MongooseOrder from "../models/order.mongoose.js";
 
 dotenv.config({ path: ".env.local" });
 
@@ -14,7 +18,6 @@ const uri = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWOR
 // SRV connection string broken in NODE 24+?
 // const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@node-learning.dqcpedh.mongodb.net/?appName=node-learning`;
 
-const { User, Product, Cart, Order } = loadModels();
 const connectWithMongoose = async () => {
   try {
     return mongoose.connect(uri, {
@@ -27,4 +30,9 @@ const connectWithMongoose = async () => {
 };
 
 export { connectWithMongoose };
-export { User, Product, Cart, Order };
+export {
+  MongooseUser as User,
+  MongooseProduct as Product,
+  MongooseCart as Cart,
+  MongooseOrder as Order,
+};

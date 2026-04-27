@@ -15,6 +15,6 @@ const cartSchema = new Schema({
   items: [cartItemSchema],
 });
 
-const Cart = model("cart", cartSchema);
+const MongooseCart = model("cart", cartSchema);
 
-export default Cart;
+export default MongooseCart;
