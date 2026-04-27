@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 
-import { viewsDir } from "./path.js";
+import { viewsDir } from "../path.js";
 
 /** Manual templating before template engines were installed */
 export const openHTMLTemplate = async (file, res) => {

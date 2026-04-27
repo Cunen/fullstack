@@ -1,11 +1,6 @@
 import { Cart } from "../utilities/database.js";
 
 export const cartViewController = (req, res) => {
-  /* Alternative way to fetch user cart items with Sequelize associations
-  req.loggedInUser.getSeq_cart_items().then(() => {
-    // console.log("Cart items for user:", cartItems);
-  });
-  */
   Cart.findOne({ userId: req.loggedInUser._id })
     .populate("items.productId")
     .then((cart) => {
