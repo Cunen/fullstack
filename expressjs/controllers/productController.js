@@ -73,7 +73,7 @@ export const productEditController = (req, res) => {
 
 export const productDeleteController = (req, res) => {
   const { productId } = req.body;
-  Product.deleteOne({ _id: productId }).then(() => {
+  Product.findByIdAndDelete(productId).then(() => {
     res.redirect("/view/products");
   });
 };
