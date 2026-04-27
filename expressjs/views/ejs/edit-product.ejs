@@ -2,7 +2,7 @@
 <div class="form-wrapper">
   <h2>Edit product</h2>
   <form action="/api/product/edit" method="POST">
-    <input type="hidden" name="seqProductId" value="<%= product.id %>" />
+    <input type="hidden" name="productId" value="<%= product._id %>" />
     <input
       type="text"
       name="name"
@@ -34,7 +34,7 @@
     <button type="submit">Update Product</button>
   </form>
   <form action="/api/product/delete" method="POST">
-    <input type="hidden" name="seqProductId" value="<%= product.id %>" />
+    <input type="hidden" name="productId" value="<%= product._id %>" />
     <button type="submit">Delete Product</button>
   </form>
 </div>

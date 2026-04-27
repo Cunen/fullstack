@@ -1,14 +1,15 @@
 import { Product } from "../models/productModel.js";
 
 export const cartViewController = (req, res) => {
-  // Alternative way to fetch user cart items with Sequelize associations
+  /* Alternative way to fetch user cart items with Sequelize associations
   req.loggedInUser.getSeq_cart_items().then(() => {
     // console.log("Cart items for user:", cartItems);
   });
+  */
 
-  Product.getCartProducts(req.loggedInUser.id).then((products) => {
+  Product.getCart(req.loggedInUser._id).then((items) => {
     res.render("cart", {
-      products,
+      items,
       page: "cart",
       pageTitle: "Cart",
     });
@@ -16,15 +17,15 @@ export const cartViewController = (req, res) => {
 };
 
 export const cartAddController = (req, res) => {
-  const { seqProductId, count } = req.body;
-  Product.addToCart(seqProductId, req.loggedInUser.id, count).then(() => {
+  const { productId, count } = req.body;
+  Product.addToCart(productId, req.loggedInUser._id, Number(count)).then(() => {
     res.redirect("/view/cart");
   });
 };
 
 export const cartEditController = (req, res) => {
   const { id, count } = req.body;
-  Product.editCartCount(id, count).then(() => {
+  Product.editCartCount(id, Number(count)).then(() => {
     res.redirect("/view/cart");
   });
 };

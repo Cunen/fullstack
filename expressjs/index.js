@@ -8,7 +8,7 @@ import viewRouter from "./routes/viewRouter.js";
 
 import { cssDir } from "./utilities/path.js";
 import { rootViewController } from "./controllers/rootController.js";
-import { connectToMongo, sequelize } from "./utilities/database.js";
+import { connectToMongo } from "./utilities/database.js";
 import { authController } from "./controllers/authContoller.js";
 
 const app = express();
@@ -61,15 +61,25 @@ app.use("/view", viewRouter);
 app.use(rootViewController);
 
 // Connect to MongoDB
-connectToMongo().then(() => {
-  sequelize
-    .sync({ force: false })
-    .then(() => {
-      server.listen(8081, () => {
-        console.log("Server is running on http://localhost:8081");
-      });
-    })
-    .catch((err) => {
-      console.error("Error connecting to the database:", err);
+connectToMongo()
+  .then(() => {
+    server.listen(8081, () => {
+      console.log("Server is running on http://localhost:8081");
     });
-});
+  })
+  .catch((err) => {
+    console.error("Error connecting to the database:", err);
+  });
+
+/* Old Sequelize connection
+sequelize
+  .sync({ force: false })
+  .then(() => {
+    server.listen(8081, () => {
+      console.log("Server is running on http://localhost:8081");
+    });
+  })
+  .catch((err) => {
+    console.error("Error connecting to the database:", err);
+  });
+  */

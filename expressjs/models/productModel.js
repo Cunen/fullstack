@@ -1,10 +1,5 @@
-import { Sequelize } from "sequelize";
-import {
-  mysqlDb,
-  SeqCartItems,
-  SeqProduct,
-  sequelize,
-} from "../utilities/database.js";
+import { mongodb } from "../utilities/database.js";
+import { ObjectId } from "mongodb";
 
 /** Product / Cart handler implementation with Sequelize */
 export class Product {
@@ -18,48 +13,49 @@ export class Product {
 
   async save() {
     try {
-      await SeqProduct.create({
-        id: this.id,
+      const products = mongodb.collection("products");
+      const product = await products.insertOne({
         name: this.name,
         price: this.price,
         description: this.description,
         inventory: this.inventory,
       });
-
-      return true;
+      return product;
     } catch (e) {
-      console.error(e);
-      return false;
+      console.error("Error creating MongoDB product:", e);
+      return null;
     }
   }
 
   static async update(id, name, price, description, inventory) {
     try {
-      await SeqProduct.update(
-        { name, price, description, inventory },
-        { where: { id } }
+      const products = mongodb.collection("products");
+      const product = await products.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { name, price, description, inventory } }
       );
-
-      return true;
+      return product;
     } catch (e) {
       console.error(e);
-      return false;
+      return null;
     }
   }
 
   static async delete(id) {
     try {
-      await SeqProduct.destroy({ where: { id } });
-      return true;
+      const products = mongodb.collection("products");
+      const product = await products.deleteOne({ _id: new ObjectId(id) });
+      return product;
     } catch (e) {
       console.error(e);
-      return false;
+      return null;
     }
   }
 
   static async getAll() {
     try {
-      const products = await SeqProduct.findAll();
+      const collection = mongodb.collection("products");
+      const products = await collection.find().toArray();
       return products;
     } catch (e) {
       console.error(e);
@@ -69,7 +65,8 @@ export class Product {
 
   static async getById(id) {
     try {
-      const product = await SeqProduct.findOne({ where: { id } });
+      const products = mongodb.collection("products");
+      const product = await products.findOne({ _id: new ObjectId(id) });
       return product;
     } catch (e) {
       console.error(e);
@@ -78,14 +75,18 @@ export class Product {
   }
 
   // Shopping Cart
-  static async addToCart(seqProductId, seqUserId, count = 1) {
+  static async addToCart(productId, userId, count = 1) {
     try {
-      // Sequelize version
-      await SeqCartItems.create({ seqProductId, seqUserId, count });
-      return true;
+      const cart = mongodb.collection("cart_items");
+      const item = await cart.insertOne({
+        productId: new ObjectId(productId),
+        userId: new ObjectId(userId),
+        count,
+      });
+      return item;
     } catch (e) {
       console.error(e);
-      return false;
+      return null;
     }
   }
 
@@ -95,96 +96,95 @@ export class Product {
     }
 
     try {
-      await SeqCartItems.update({ count }, { where: { id } });
-      return true;
+      const cart = mongodb.collection("cart_items");
+      const item = await cart.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { count } }
+      );
+      return item;
     } catch (e) {
       console.error(e);
-      return false;
+      return null;
     }
   }
 
   static async removeFromCart(id) {
     try {
-      await SeqCartItems.destroy({ where: { id } });
-      return true;
+      const cart = mongodb.collection("cart_items");
+      const item = await cart.deleteOne({ _id: new ObjectId(id) });
+      return item;
     } catch (e) {
       console.error(e);
-      return false;
+      return null;
     }
   }
 
-  static async clearCart(seqUserId) {
+  static async clearCart(userId) {
     try {
-      // Sequelize version
-      await SeqCartItems.destroy({ where: { seqUserId }, truncate: true });
-      return true;
+      const cart = mongodb.collection("cart_items");
+      const items = await cart.deleteMany({ userId: new ObjectId(userId) });
+      return items;
     } catch (e) {
       console.error(e);
-      return false;
+      return null;
     }
   }
 
-  static async getCart(seqUserId) {
+  static async getCart(userId) {
     try {
-      const cart = await SeqCartItems.findAll({ where: { seqUserId } });
-      return cart;
+      const cart = mongodb.collection("cart_items");
+      const items = await cart
+        .aggregate([
+          { $match: { userId: new ObjectId(userId) } },
+          {
+            $lookup: {
+              from: "products",
+              localField: "productId",
+              foreignField: "_id",
+              as: "product",
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "userId",
+              foreignField: "_id",
+              as: "user",
+            },
+          },
+          {
+            $unwind: "$product",
+          },
+        ])
+        .toArray();
+      return items;
     } catch (e) {
       console.error(e);
       return [];
     }
   }
 
-  static async getCartProducts(seqUserId) {
-    const products = await Product.getAll();
-    const cart = await Product.getCart(seqUserId);
-    return cart.map((item) => {
-      const product = products.find((p) => p.id === item.seqProductId);
-      // NOTE: Spread operator doesn't work with Sequelize instances
-      return {
-        id: item.id,
-        count: item.count,
-        seqUserId: item.seqUserId,
-        seqProductId: item.id,
-        name: product.name,
-        price: product.price,
-        inventory: product.inventory,
-      };
-    });
-  }
-
   // Checkout
-  static async checkoutCartItems(cartProducts, seqUserId) {
-    // Then clear those with 0 or less inventory, and clear the cart
+  static async checkoutCartItems(orderId, userId) {
     try {
-      // First register updates for the products
-      const updates = cartProducts.flatMap((item) => {
-        // MySQL version
-        const sql = mysqlDb.execute(
-          "UPDATE products SET inventory = inventory - ? WHERE id = ?",
-          [item.count, item.seqProductId]
-        );
+      const products = mongodb.collection("products");
+      const orders = mongodb.collection("orders");
 
-        // Sequelize version
-        const sequalize = SeqProduct.update(
-          { inventory: sequelize.literal(`inventory - ${item.count}`) },
-          { where: { id: item.seqProductId } }
-        );
+      // Get ordered products
+      const order = await orders.findOne({ _id: new ObjectId(orderId) });
 
-        return [sql, sequalize];
-      });
+      const ops = order.items.map((item) => ({
+        updateOne: {
+          filter: { _id: new ObjectId(item.productId) },
+          update: { $inc: { inventory: -item.count } },
+        },
+      }));
 
-      await Promise.all(updates);
+      await products.bulkWrite(ops);
 
-      // MySQL version
-      await mysqlDb.execute("DELETE FROM products WHERE inventory <= 0");
+      await products.deleteMany({ inventory: { $lte: 0 } });
 
-      // Sequelize version
-      await SeqProduct.destroy({
-        where: { inventory: { [Sequelize.Op.lte]: 0 } },
-      });
-
-      // Finally, clear the cart
-      return Product.clearCart(seqUserId);
+      return Product.clearCart(userId);
     } catch (e) {
       console.error(e);
       return false;

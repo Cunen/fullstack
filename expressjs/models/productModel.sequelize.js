@@ -1,6 +1,12 @@
-import { mysqlDb } from "../utilities/database.js";
+import { Sequelize } from "sequelize";
+import {
+  mysqlDb,
+  SeqCartItems,
+  SeqProduct,
+  sequelize,
+} from "../utilities/database.js";
 
-/** Product / Cart handler implementation with MySQL */
+/** Product / Cart handler implementation with Sequelize */
 export class Product {
   constructor(name, price, description, inventory) {
     this.id = Date.now().toString();
@@ -12,11 +18,13 @@ export class Product {
 
   async save() {
     try {
-      // MySQL version
-      await mysqlDb.execute(
-        "INSERT INTO products (id, name, price, description, inventory) VALUES (?, ?, ?, ?, ?)",
-        [this.id, this.name, this.price, this.description, this.inventory]
-      );
+      await SeqProduct.create({
+        id: this.id,
+        name: this.name,
+        price: this.price,
+        description: this.description,
+        inventory: this.inventory,
+      });
 
       return true;
     } catch (e) {
@@ -27,10 +35,9 @@ export class Product {
 
   static async update(id, name, price, description, inventory) {
     try {
-      // MySQL version
-      await mysqlDb.execute(
-        "UPDATE products SET name = ?, price = ?, description = ?, inventory = ? WHERE id = ?",
-        [name, price, description, inventory, id]
+      await SeqProduct.update(
+        { name, price, description, inventory },
+        { where: { id } }
       );
 
       return true;
@@ -42,9 +49,7 @@ export class Product {
 
   static async delete(id) {
     try {
-      // MySQL version
-      await mysqlDb.execute("DELETE FROM products WHERE id = ?", [id]);
-
+      await SeqProduct.destroy({ where: { id } });
       return true;
     } catch (e) {
       console.error(e);
@@ -54,9 +59,7 @@ export class Product {
 
   static async getAll() {
     try {
-      // MySQL version:
-      const [products] = await mysqlDb.execute("SELECT * FROM products");
-
+      const products = await SeqProduct.findAll();
       return products;
     } catch (e) {
       console.error(e);
@@ -66,12 +69,7 @@ export class Product {
 
   static async getById(id) {
     try {
-      // MySQL version
-      const [[product]] = await mysqlDb.execute(
-        "SELECT * FROM products WHERE id = ?",
-        [id]
-      );
-
+      const product = await SeqProduct.findOne({ where: { id } });
       return product;
     } catch (e) {
       console.error(e);
@@ -80,14 +78,10 @@ export class Product {
   }
 
   // Shopping Cart
-  static async addToCart(productId, count = 1) {
+  static async addToCart(productId, seqUserId, count = 1) {
     try {
-      // MySQL version
-      await mysqlDb.execute(
-        "INSERT INTO cart (productId, count) VALUES (?, ?)",
-        [Number(productId), Number(count)]
-      );
-
+      // Sequelize version
+      await SeqCartItems.create({ productId, seqUserId, count });
       return true;
     } catch (e) {
       console.error(e);
@@ -95,18 +89,13 @@ export class Product {
     }
   }
 
-  static async editCartCount(productId, count) {
+  static async editCartCount(id, count) {
     if (count <= 0) {
-      return Product.removeFromCart(productId);
+      return Product.removeFromCart(id);
     }
 
     try {
-      // MySQL version
-      await mysqlDb.execute("UPDATE cart SET count = ? WHERE productId = ?", [
-        Number(count),
-        Number(productId),
-      ]);
-
+      await SeqCartItems.update({ count }, { where: { id } });
       return true;
     } catch (e) {
       console.error(e);
@@ -114,13 +103,9 @@ export class Product {
     }
   }
 
-  static async removeFromCart(productId) {
+  static async removeFromCart(id) {
     try {
-      // MySQL version
-      await mysqlDb.execute("DELETE FROM cart WHERE productId = ?", [
-        Number(productId),
-      ]);
-
+      await SeqCartItems.destroy({ where: { id } });
       return true;
     } catch (e) {
       console.error(e);
@@ -128,11 +113,10 @@ export class Product {
     }
   }
 
-  static async clearCart() {
+  static async clearCart(seqUserId) {
     try {
-      // MySQL version
-      await mysqlDb.execute("DELETE FROM cart WHERE productId >= 0");
-
+      // Sequelize version
+      await SeqCartItems.destroy({ where: { seqUserId }, truncate: true });
       return true;
     } catch (e) {
       console.error(e);
@@ -140,11 +124,9 @@ export class Product {
     }
   }
 
-  static async getCart() {
+  static async getCart(seqUserId) {
     try {
-      // MySQL version:
-      const [cart] = await mysqlDb.execute("SELECT * FROM cart");
-
+      const cart = await SeqCartItems.findAll({ where: { seqUserId } });
       return cart;
     } catch (e) {
       console.error(e);
@@ -152,9 +134,9 @@ export class Product {
     }
   }
 
-  static async getCartProducts() {
+  static async getCartProducts(seqUserId) {
     const products = await Product.getAll();
-    const cart = await Product.getCart();
+    const cart = await Product.getCart(seqUserId);
     return cart.map((item) => {
       const product = products.find((p) => p.id === item.productId);
       // NOTE: Spread operator doesn't work with Sequelize instances
@@ -171,16 +153,24 @@ export class Product {
   }
 
   // Checkout
-  static async checkoutCartItems(cartProducts) {
+  static async checkoutCartItems(cartProducts, seqUserId) {
     // Then clear those with 0 or less inventory, and clear the cart
     try {
       // First register updates for the products
-      const updates = cartProducts.map((item) => {
+      const updates = cartProducts.flatMap((item) => {
         // MySQL version
-        return mysqlDb.execute(
+        const sql = mysqlDb.execute(
           "UPDATE products SET inventory = inventory - ? WHERE id = ?",
           [item.count, item.productId]
         );
+
+        // Sequelize version
+        const sequalize = SeqProduct.update(
+          { inventory: sequelize.literal(`inventory - ${item.count}`) },
+          { where: { id: item.productId } }
+        );
+
+        return [sql, sequalize];
       });
 
       await Promise.all(updates);
@@ -188,8 +178,13 @@ export class Product {
       // MySQL version
       await mysqlDb.execute("DELETE FROM products WHERE inventory <= 0");
 
+      // Sequelize version
+      await SeqProduct.destroy({
+        where: { inventory: { [Sequelize.Op.lte]: 0 } },
+      });
+
       // Finally, clear the cart
-      return Product.clearCart();
+      return Product.clearCart(seqUserId);
     } catch (e) {
       console.error(e);
       return false;

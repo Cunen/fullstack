@@ -1,26 +1,28 @@
-import { mongodb, SeqUser } from "../utilities/database.js";
+import { mongodb } from "../utilities/database.js";
 
 export const authController = (req, res, next) => {
+  /* User Creation 
+    usersCollection
+      .insertOne({
+        name: "Kalle",
+        email: "ka.kuparinen@gmail.com",
+        passwordHash: "hashedpassword",
+        username: "cunen",
+      })
+  */
+
   // MongoDB Login
   const usersCollection = mongodb.collection("users");
   usersCollection.findOne({ username: "cunen" }).then((user) => {
-    if (!user) {
-      usersCollection
-        .insertOne({
-          name: "Kalle",
-          email: "ka.kuparinen@gmail.com",
-          passwordHash: "hashedpassword",
-          username: "cunen",
-        })
-        .then((user) => {
-          console.log("MongoDB user created:", user);
-        });
+    if (user) {
+      req.loggedInUser = user;
+      next();
     } else {
-      console.log("MongoDB user:", user);
+      res.render("root", { page: "root", pageTitle: "ExpressJS" });
     }
   });
 
-  // Temporary
+  /* Sequelize Login
   SeqUser.findByPk(1)
     .then((user) => {
       if (!user) {
@@ -41,4 +43,5 @@ export const authController = (req, res, next) => {
       console.error("Authentication error:", e);
       res.render("root", { page: "root", pageTitle: "ExpressJS" });
     });
+    */
 };

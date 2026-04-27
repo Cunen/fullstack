@@ -1,14 +1,14 @@
 import { Product } from "../models/productModel.js";
-import { SeqOrderItems, SeqProduct } from "../utilities/database.js";
+import { mongodb } from "../utilities/database.js";
 
 export const checkoutViewController = (req, res) => {
-  Product.getCartProducts(req.loggedInUser.id).then((products) => {
-    const total = products.reduce(
-      (acc, product) => acc + product.price * product.count,
+  Product.getCart(req.loggedInUser._id).then((items) => {
+    const total = items.reduce(
+      (acc, item) => acc + item.product.price * item.count,
       0
     );
     res.render("checkout", {
-      products,
+      items,
       total,
       page: "checkout",
       pageTitle: "Checkout",
@@ -18,17 +18,14 @@ export const checkoutViewController = (req, res) => {
 
 export const orderViewController = async (req, res) => {
   try {
-    const orders = await req.loggedInUser.getSeq_orders({
-      include: [
-        {
-          model: SeqOrderItems,
-          include: [SeqProduct],
-        },
-      ],
-    });
+    const orders = mongodb.collection("orders");
+
+    const userOrders = await orders
+      .find({ userId: req.loggedInUser._id })
+      .toArray();
 
     res.render("orders", {
-      orders,
+      orders: userOrders,
       page: "orders",
       pageTitle: "Orders",
     });
@@ -42,22 +39,18 @@ export const checkoutController = async (req, res) => {
   const user = req.loggedInUser;
 
   try {
-    // Works through association
-    const cartItems = await user.getSeq_cart_items();
-    const order = await user.createSeq_order();
-    const addOrderItems = cartItems.map((item) => {
-      return order.createSeq_order_item({
-        count: item.count,
-        seqProductId: item.seqProductId,
-        seqUserId: user.id,
-      });
+    const items = await Product.getCart(user._id);
+
+    // Create order with items
+    const orders = mongodb.collection("orders");
+    const insertedOrder = await orders.insertOne({
+      userId: user._id,
+      items: items.map((item) => item),
     });
 
-    await Promise.all(addOrderItems);
+    await Product.checkoutCartItems(insertedOrder.insertedId, user._id);
 
-    await Product.checkoutCartItems(cartItems, req.loggedInUser.id);
-
-    res.redirect("/view/products");
+    res.redirect("/view/orders");
   } catch (error) {
     console.error("Error during checkout:", error);
     res.redirect("/view/checkout");
