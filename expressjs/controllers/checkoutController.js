@@ -1,58 +1,76 @@
-import { Product } from "../models/productModel.js";
-import { mongodb } from "../utilities/database.js";
+import { Cart, Order, Product } from "../utilities/database.js";
 
-export const checkoutViewController = (req, res) => {
-  Product.getCart(req.loggedInUser._id).then((items) => {
-    const total = items.reduce(
-      (acc, item) => acc + item.product.price * item.count,
-      0
-    );
-    res.render("checkout", {
-      items,
-      total,
-      page: "checkout",
-      pageTitle: "Checkout",
-    });
+export const checkoutViewController = async (req, res) => {
+  const cart = await Cart.findOne({ userId: req.loggedInUser._id }).populate(
+    "items.productId"
+  );
+
+  const total = cart
+    ? cart.items.reduce(
+        (acc, item) => acc + item.productId.price * item.count,
+        0
+      )
+    : 0;
+
+  return res.render("checkout", {
+    cart,
+    total,
+    page: "checkout",
+    pageTitle: "Checkout",
   });
 };
 
 export const orderViewController = async (req, res) => {
-  try {
-    const orders = mongodb.collection("orders");
+  const orders = await Order.find({ userId: req.loggedInUser._id }).populate(
+    "items.productId"
+  );
 
-    const userOrders = await orders
-      .find({ userId: req.loggedInUser._id })
-      .toArray();
-
-    res.render("orders", {
-      orders: userOrders,
-      page: "orders",
-      pageTitle: "Orders",
-    });
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-    res.redirect("/view/products");
-  }
+  return res.render("orders", {
+    orders: orders || [],
+    page: "orders",
+    pageTitle: "Orders",
+  });
 };
 
 export const checkoutController = async (req, res) => {
   const user = req.loggedInUser;
 
-  try {
-    const items = await Product.getCart(user._id);
+  const cart = await Cart.findOne({ userId: user._id }).populate(
+    "items.productId"
+  );
 
-    // Create order with items
-    const orders = mongodb.collection("orders");
-    const insertedOrder = await orders.insertOne({
-      userId: user._id,
-      items: items.map((item) => item),
-    });
-
-    await Product.checkoutCartItems(insertedOrder.insertedId, user._id);
-
-    res.redirect("/view/orders");
-  } catch (error) {
-    console.error("Error during checkout:", error);
-    res.redirect("/view/checkout");
+  if (!cart) {
+    return res.redirect("/view/checkout");
   }
+
+  const total = cart.items.reduce(
+    (acc, item) => acc + item.productId.price * item.count,
+    0
+  );
+
+  const order = new Order({
+    userId: user._id,
+    total,
+    items: cart.items.map((item) => ({
+      productId: item.productId._id,
+      count: item.count,
+    })),
+  });
+
+  await order.save();
+
+  const productUpdates = cart.items.map((item) => {
+    return {
+      updateOne: {
+        filter: { _id: item.productId._id },
+        update: { $inc: { inventory: -item.count } },
+      },
+    };
+  });
+  await Product.bulkWrite(productUpdates);
+
+  // Delete the cart after creating the order
+  await Cart.deleteOne({ userId: user._id });
+
+  res.redirect("/view/orders");
 };

@@ -1,9 +1,8 @@
-import { Product } from "../models/productModel.js";
+import { Product } from "../utilities/database.js";
 
 export const productViewController = (req, res, next) => {
   const id = req.params.id;
-
-  Product.getById(id).then((product) => {
+  Product.findById(id).then((product) => {
     if (product) {
       res.render("product", {
         product,
@@ -17,7 +16,7 @@ export const productViewController = (req, res, next) => {
 };
 
 export const productsViewController = (req, res) => {
-  Product.getAll().then((products) => {
+  Product.find().then((products) => {
     res.render("products", {
       products,
       page: "products",
@@ -35,7 +34,7 @@ export const addProductViewController = (req, res) => {
 
 export const editProductViewController = (req, res, next) => {
   const id = req.params.id;
-  Product.getById(id).then((product) => {
+  Product.findById(id).then((product) => {
     if (product) {
       res.render("edit-product", {
         product,
@@ -50,12 +49,12 @@ export const editProductViewController = (req, res, next) => {
 
 export const productAddController = (req, res) => {
   const { name, price, description, inventory } = req.body;
-  const product = new Product(
+  const product = new Product({
     name,
-    Number(price),
+    price: Number(price),
     description,
-    Number(inventory)
-  );
+    inventory: Number(inventory),
+  });
   product.save().then(() => {
     res.redirect("/view/products");
   });
@@ -63,12 +62,10 @@ export const productAddController = (req, res) => {
 
 export const productEditController = (req, res) => {
   const { name, price, description, inventory, productId } = req.body;
-  Product.update(
-    productId,
-    name,
-    Number(price),
-    description,
-    Number(inventory)
+
+  Product.updateOne(
+    { _id: productId },
+    { name, price: Number(price), description, inventory: Number(inventory) }
   ).then(() => {
     res.redirect("/view/products");
   });
@@ -76,7 +73,7 @@ export const productEditController = (req, res) => {
 
 export const productDeleteController = (req, res) => {
   const { productId } = req.body;
-  Product.delete(productId).then(() => {
+  Product.deleteOne({ _id: productId }).then(() => {
     res.redirect("/view/products");
   });
 };

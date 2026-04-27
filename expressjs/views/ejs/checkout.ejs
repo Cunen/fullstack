@@ -1,19 +1,19 @@
 <%- include('base-top') %>
 <div class="product-list">
   <h2>Checkout - Total: <%= total %>€</h2>
-  <% if (items && items.length > 0) { %>
-    <% items.forEach(item => { %>
+  <% if (cart && cart.items && cart.items.length > 0) { %>
+    <% cart.items.forEach(item => { %>
       <div class="product-item">
         <div class="info">
-          <p>Product: <%= item.product.name %></p>
-          <p><%= item.product.price %>€</p>
-          <% if (item.product.description) { %>
-            <p>Description: <%= item.product.description %></p>
+          <p>Product: <%= item.productId.name %></p>
+          <p><%= item.productId.price %>€</p>
+          <% if (item.productId.description) { %>
+            <p>Description: <%= item.productId.description %></p>
           <% } %>
         </div>
         <div>
           <p class="count">Count: <%= item.count %></p>
-          <p class="total">Total: <%= item.product.price * item.count %>€</p>
+          <p class="total">Total: <%= item.productId.price * item.count %>€</p>
         </div>
       </div>
     <% }); %>

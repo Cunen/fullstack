@@ -1,6 +1,21 @@
-import { mongodb } from "../utilities/database.js";
+import { User } from "../utilities/database.js";
 
 export const authController = (req, res, next) => {
+  // Mongoose Login
+  User.findOne({ username: "cunen" })
+    .then((user) => {
+      if (user) {
+        req.loggedInUser = user;
+        next();
+      } else {
+        res.render("root", { page: "root", pageTitle: "ExpressJS" });
+      }
+    })
+    .catch((e) => {
+      console.error("Authentication error:", e);
+      res.render("root", { page: "root", pageTitle: "ExpressJS" });
+    });
+
   /* User Creation 
     usersCollection
       .insertOne({
@@ -12,8 +27,8 @@ export const authController = (req, res, next) => {
   */
 
   // MongoDB Login
-  const usersCollection = mongodb.collection("users");
-  usersCollection.findOne({ username: "cunen" }).then((user) => {
+  /*
+  User.findByUsername("cunen").then((user) => {
     if (user) {
       req.loggedInUser = user;
       next();
@@ -21,6 +36,7 @@ export const authController = (req, res, next) => {
       res.render("root", { page: "root", pageTitle: "ExpressJS" });
     }
   });
+  */
 
   /* Sequelize Login
   SeqUser.findByPk(1)

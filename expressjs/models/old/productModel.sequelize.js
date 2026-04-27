@@ -4,7 +4,7 @@ import {
   SeqCartItems,
   SeqProduct,
   sequelize,
-} from "../utilities/database.js";
+} from "../../utilities/database.js";
 
 /** Product / Cart handler implementation with Sequelize */
 export class Product {

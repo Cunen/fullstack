@@ -2,9 +2,11 @@ import mysql from "mysql2";
 import dotenv from "dotenv";
 import process from "process";
 import { Sequelize } from "sequelize";
-import { getSequelizeModels } from "../models/sequelizeModel.js";
+import { getSequelizeModels } from "../models/old/sequelizeModel.js";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import { STATUS_CODES } from "http";
+import mongoose from "mongoose";
+import { loadModels } from "../models/index.mongoose.js";
 
 dotenv.config({ path: ".env.local" });
 
@@ -58,6 +60,18 @@ const connectToMongo = async () => {
     return STATUS_CODES[500];
   }
 };
+
+const { User, Product, Cart, Order } = loadModels();
+const connectWithMongoose = async () => {
+  try {
+    return mongoose.connect(uri, {
+      dbName: "express-db",
+    });
+  } catch (error) {
+    console.error("Error connecting to MongoDB with Mongoose:", error);
+    throw error;
+  }
+};
 const shutdown = () => {
   mongo.close(false, () => {
     console.log("MongoDB connection closed.");
@@ -77,4 +91,7 @@ export {
   SeqOrderItems,
   mongodb,
   connectToMongo,
+  connectWithMongoose,
 };
+
+export { User, Product, Cart, Order };

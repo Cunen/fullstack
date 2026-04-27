@@ -1,4 +1,4 @@
-import { mysqlDb } from "../utilities/database.js";
+import { mysqlDb } from "../../utilities/database.js";
 
 /** Product / Cart handler implementation with MySQL */
 export class Product {

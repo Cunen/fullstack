@@ -1,19 +1,23 @@
 <%- include('base-top') %>
 <div class="product-list">
   <h2>My Orders</h2>
-  <% orders.forEach(order => { %>
-    <div class="order-item">
-      <p>Order ID: <%= order._id %></p>
-    </div>
-    <h3>Products:</h3>
-    <% order.items.forEach(item => { %>
+  <% if (orders.length <= 0) { %>
+    <p>You have no orders yet.</p>
+  <% } else { %>
+    <% orders.forEach(order => { %>
       <div class="order-item">
-        <p>Product ID: <%= item._id %></p>
-        <p>Product Name: <%= item.product.name %></p>
-        <p>Product Price: <%= item.product.price %></p>
-        <p>Quantity: <%= item.count %></p>
+        <p>Order ID: <%= order._id %></p>
       </div>
+      <h3>Products:</h3>
+      <% order.items.forEach(item => { %>
+        <div class="order-item">
+          <p>Product ID: <%= item._id %></p>
+          <p>Product Name: <%= item.productId.name %></p>
+          <p>Product Price: <%= item.productId.price %></p>
+          <p>Quantity: <%= item.count %></p>
+        </div>
+      <% }) %>
     <% }) %>
-  <% }) %>
+  <% } %>
 </div>
 <%- include('base-bottom') %>

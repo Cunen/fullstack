@@ -1,4 +1,4 @@
-import { mongodb } from "../utilities/database.js";
+import { mongodb } from "../../utilities/database.js";
 import { ObjectId } from "mongodb";
 
 /** Product / Cart handler implementation with Sequelize */
@@ -145,6 +145,9 @@ export class Product {
             },
           },
           {
+            $unwind: "$product",
+          },
+          {
             $lookup: {
               from: "users",
               localField: "userId",
@@ -153,7 +156,7 @@ export class Product {
             },
           },
           {
-            $unwind: "$product",
+            $unwind: "$user",
           },
         ])
         .toArray();

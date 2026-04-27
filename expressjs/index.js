@@ -8,7 +8,7 @@ import viewRouter from "./routes/viewRouter.js";
 
 import { cssDir } from "./utilities/path.js";
 import { rootViewController } from "./controllers/rootController.js";
-import { connectToMongo } from "./utilities/database.js";
+import { connectWithMongoose } from "./utilities/database.js";
 import { authController } from "./controllers/authContoller.js";
 
 const app = express();
@@ -60,8 +60,8 @@ app.use("/view", viewRouter);
 // Fallback
 app.use(rootViewController);
 
-// Connect to MongoDB
-connectToMongo()
+// Connect to MongoDB with Mongoose
+connectWithMongoose()
   .then(() => {
     server.listen(8081, () => {
       console.log("Server is running on http://localhost:8081");
