@@ -11,23 +11,36 @@
       <nav>
         <ul>
           <li class="<% if (page === 'root') { %>active<% } %>">
-            <a href="/">Home</a>
+            <a href="/view/home">Home</a>
           </li>
           <li class="<% if (page === 'products') { %>active<% } %>">
             <a href="/view/products">Products</a>
           </li>
-          <li class="<% if (page === 'add-product') { %>active<% } %>">
-            <a href="/view/add-product">Add Product</a>
+          <% if (typeof userIsLoggedIn !== 'undefined' && userIsLoggedIn) { %>
+            <li class="<% if (page === 'add-product') { %>active<% } %>">
+              <a href="/view/add-product">Add Product</a>
+            </li>
+            <li class="<% if (page === 'cart') { %>active<% } %>">
+              <a href="/view/cart">Cart</a>
+            </li>
+            <li class="<% if (page === 'checkout') { %>active<% } %>">
+              <a href="/view/checkout">Checkout</a>
+            </li>
+            <li class="<% if (page === 'orders') { %>active<% } %>">
+              <a href="/view/orders">Orders</a>
           </li>
-          <li class="<% if (page === 'cart') { %>active<% } %>">
-            <a href="/view/cart">Cart</a>
-          </li>
-          <li class="<% if (page === 'checkout') { %>active<% } %>">
-            <a href="/view/checkout">Checkout</a>
-          </li>
-          <li class="<% if (page === 'orders') { %>active<% } %>">
-            <a href="/view/orders">Orders</a>
-          </li>
+          <% } %>
+        </ul>
+        <ul>
+          <% if (typeof userIsLoggedIn !== 'undefined' && userIsLoggedIn) { %>
+            <li>
+              <a href="/view/logout">Logout</a>
+            </li>
+          <% } else { %>
+            <li class="<% if (page === 'login') { %>active<% } %>">
+              <a href="/view/login">Login</a>
+            </li>
+          <% } %>
         </ul>
       </nav>
     </header>

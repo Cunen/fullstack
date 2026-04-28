@@ -15,23 +15,9 @@ export const cartViewController = (req, res) => {
 export const cartAddController = async (req, res) => {
   const { productId, count } = req.body;
 
-  const cart = await Cart.findOne({ userId: req.loggedInUser._id });
+  const cart = await Cart.findOrCreateByUserId(req.loggedInUser._id);
 
-  if (cart) {
-    const existingItem = cart.items.find(
-      (item) => item.productId.toString() === productId.toString()
-    );
-
-    if (existingItem) existingItem.count += Number(count);
-    else cart.items.push({ productId, count: Number(count) });
-
-    await cart.save();
-  } else {
-    await Cart.create({
-      userId: req.loggedInUser._id,
-      items: [{ productId, count: Number(count) }],
-    });
-  }
+  await cart.addProduct(productId, count);
 
   res.redirect("/view/cart");
 };
@@ -43,15 +29,7 @@ export const cartEditController = async (req, res) => {
 
   if (!cart) return res.redirect("/view/cart");
 
-  const existingItem = cart.items.find(
-    (item) => item.productId.toString() === productId.toString()
-  );
-
-  if (!existingItem) return res.redirect("/view/cart");
-
-  existingItem.count = Number(count);
-
-  await cart.save();
+  await cart.editProduct(productId, count);
 
   res.redirect("/view/cart");
 };
@@ -63,17 +41,7 @@ export const cartRemoveController = async (req, res) => {
 
   if (!cart) return res.redirect("/view/cart");
 
-  const existingItem = cart.items.find(
-    (item) => item.productId.toString() === productId.toString()
-  );
-
-  if (!existingItem) return res.redirect("/view/cart");
-
-  cart.items = cart.items.filter(
-    (item) => item.productId.toString() !== productId.toString()
-  );
-
-  await cart.save();
+  await cart.removeProduct(productId);
 
   res.redirect("/view/cart");
 };

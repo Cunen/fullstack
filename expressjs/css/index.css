@@ -12,6 +12,8 @@ header {
 
 nav {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 ul {
@@ -94,6 +96,10 @@ button {
   cursor: pointer;
 }
 
+button.secondary {
+  background-color: #6c757d;
+}
+
 button:hover {
   background-color: #0056b3;
 }
@@ -137,4 +143,10 @@ div.info {
 p.out {
   color: rgb(194, 0, 0);
   font-weight: 700;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }

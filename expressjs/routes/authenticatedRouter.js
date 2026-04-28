@@ -2,7 +2,6 @@ import express from "express";
 
 import {
   productViewController,
-  productsViewController,
   addProductViewController,
   editProductViewController,
 } from "../controllers/productController.js";
@@ -16,7 +15,6 @@ import {
 const viewRouter = express.Router();
 
 viewRouter.get("/product/:id", productViewController);
-viewRouter.get("/products", productsViewController);
 viewRouter.get("/checkout", checkoutViewController);
 viewRouter.get("/orders", orderViewController);
 viewRouter.get("/cart", cartViewController);

@@ -5,12 +5,7 @@ export const checkoutViewController = async (req, res) => {
     "items.productId"
   );
 
-  const total = cart
-    ? cart.items.reduce(
-        (acc, item) => acc + item.productId.price * item.count,
-        0
-      )
-    : 0;
+  const total = cart?.getTotal() || 0;
 
   return res.render("checkout", {
     cart,

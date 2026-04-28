@@ -2,8 +2,14 @@
 <div class="form-wrapper">
   <h1>Root</h1>
   <a href="/view/products"><button>Products</button></a>
+  <% if (typeof userIsLoggedIn !== 'undefined' && userIsLoggedIn) { %>
   <a href="/view/add-product"><button>Add Product</button></a>
   <a href="/view/cart"><button>Cart</button></a>
   <a href="/view/checkout"><button>Checkout</button></a>
+  <a href="/view/orders"><button>Orders</button></a>
+  <% } else { %>
+    <a href="/view/login"><button>Login</button></a>
+    <a href="/view/register"><button>Register</button></a>
+  <% } %>
 </div>
 <%- include('base-bottom') %>

@@ -1,0 +1,19 @@
+<%- include('base-top') %>
+<div class="login-form">
+  <h2>Login</h2>
+  <form action="/api/login" method="POST">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required />
+    <label for="password">Password:</label>
+    <input
+      type="password"
+      id="password"
+      name="password"
+      placeholder="password"
+      required
+    />
+    <button type="submit">Login</button>
+  </form>
+  <a href="/view/register"><button class="secondary">Register</button></a>
+</div>
+<%- include('base-bottom') %>

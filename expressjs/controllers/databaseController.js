@@ -14,13 +14,13 @@ dotenv.config({ path: ".env.local" });
  * Username: MONGO_USERNAME from .env.local
  * Password: MONGO_PASSWORD from .env.local
  */
-const uri = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@ac-aokgvtf-shard-00-00.dqcpedh.mongodb.net:27017,ac-aokgvtf-shard-00-01.dqcpedh.mongodb.net:27017,ac-aokgvtf-shard-00-02.dqcpedh.mongodb.net:27017/?ssl=true&replicaSet=atlas-5if7zx-shard-0&authSource=admin&appName=node-learning`;
+export const MONGODB_CONNECTION_STRING = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@ac-aokgvtf-shard-00-00.dqcpedh.mongodb.net:27017,ac-aokgvtf-shard-00-01.dqcpedh.mongodb.net:27017,ac-aokgvtf-shard-00-02.dqcpedh.mongodb.net:27017/?ssl=true&replicaSet=atlas-5if7zx-shard-0&authSource=admin&appName=node-learning`;
 // SRV connection string broken in NODE 24+?
 // const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@node-learning.dqcpedh.mongodb.net/?appName=node-learning`;
 
 const connectWithMongoose = async () => {
   try {
-    return mongoose.connect(uri, {
+    return mongoose.connect(MONGODB_CONNECTION_STRING, {
       dbName: "express-db",
     });
   } catch (error) {
