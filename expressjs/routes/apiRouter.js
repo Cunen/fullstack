@@ -15,12 +15,17 @@ import {
   allowAuth,
   loginController,
   registerController,
+  requestResetController,
+  resetPasswordController,
 } from "../controllers/authController.js";
 
 const apiRouter = express.Router();
 
 apiRouter.post("/login", loginController);
 apiRouter.post("/register", registerController);
+
+apiRouter.post("/request-reset", requestResetController);
+apiRouter.post("/password-reset", resetPasswordController);
 
 apiRouter.post("/product", allowAuth, productAddController);
 apiRouter.post("/product/edit", allowAuth, productEditController);
