@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import redirectWithNotification from "../utilities/notification.js";
 import { User } from "./databaseController.js";
 import bcrypt from "bcrypt";
@@ -61,29 +62,20 @@ export const loginViewController = (req, res) => {
 };
 
 export const registerController = async (req, res) => {
-  const { name, username, email, password, confirmPassword } = req.body;
+  const { name, username, email, password } = req.body;
 
-  const passwordOK = password === confirmPassword;
+  const errors = validationResult(req);
 
-  if (!passwordOK) {
+  if (!errors.isEmpty()) {
     return redirectWithNotification(
       req,
       res,
       "/view/register",
       "error",
-      "Password and confirm password do not match"
-    );
-  }
-
-  const user = await User.findOne({ $or: [{ username }, { email }] });
-
-  if (user) {
-    return redirectWithNotification(
-      req,
-      res,
-      "/view/register",
-      "error",
-      "Username or email already exists"
+      errors
+        .array()
+        .map((e) => e.path + ": " + e.msg)
+        .join(", ")
     );
   }
 
