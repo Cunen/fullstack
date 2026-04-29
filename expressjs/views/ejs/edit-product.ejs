@@ -32,10 +32,14 @@
       value="<%= product.inventory %>"
     />
     <button type="submit">Update Product</button>
+    <!-- Include the CSRF token as a hidden input -->
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
   </form>
   <form action="/api/product/delete" method="POST">
     <input type="hidden" name="productId" value="<%= product._id %>" />
     <button type="submit">Delete Product</button>
+    <!-- Include the CSRF token as a hidden input -->
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
   </form>
 </div>
 <%- include('base-bottom') %>

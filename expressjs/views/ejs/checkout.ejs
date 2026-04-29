@@ -21,6 +21,8 @@
 </div>
 <form action="/api/checkout" method="POST">
   <button type="submit">Confirm checkout</button>
+    <!-- Include the CSRF token as a hidden input -->
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
 </form>
 <a href="/view/cart"><button>Back to cart</button></a>
 <%- include('base-bottom') %>

@@ -7,6 +7,8 @@
     <input type="text" name="description" id="description" placeholder="description" />
     <input type="text" name="inventory" id="inventory" placeholder="inventory" />
     <button type="submit">Add Product</button>
+    <!-- Include the CSRF token as a hidden input -->
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
   </form>
 </div>
 <%- include('base-bottom') %>

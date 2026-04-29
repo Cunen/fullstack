@@ -21,6 +21,8 @@
           <input type="hidden" name="productId" value="<%= product._id %>" />
           <input type="number" name="count" id="count" value="1" min="1" max="<%= product.inventory %>" />
           <button type="submit">Add to Cart</button>
+          <!-- Include the CSRF token as a hidden input -->
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         </form>
       <% } %>
     </div>

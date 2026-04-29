@@ -13,6 +13,8 @@
       required
     />
     <button type="submit">Login</button>
+    <!-- Include the CSRF token as a hidden input -->
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
   </form>
   <a href="/view/register"><button class="secondary">Register</button></a>
 </div>

@@ -17,11 +17,15 @@
         <input type="hidden" name="productId" value="<%= item.productId._id %>" />
         <input type="number" name="count" id="count" value="<%= item.count %>" min="1" max="<%= item.productId.inventory %>" />
         <button type="submit">Update Count</button>
+        <!-- Include the CSRF token as a hidden input -->
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       </form>
 
       <form action="/api/cart/remove" method="POST">
         <input type="hidden" name="productId" value="<%= item.productId._id %>" />
         <button type="submit">Delete</button>
+        <!-- Include the CSRF token as a hidden input -->
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       </form>
     <% }); %>
   <% } %>
