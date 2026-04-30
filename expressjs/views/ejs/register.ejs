@@ -3,11 +3,44 @@
   <h2>Register</h2>
   <form action="/api/register" method="POST">
     <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required />
+    <input
+      type="text"
+      id="name"
+      name="name"
+      required
+      value="<%= previousValues?.name %>"
+      class="<%= validationErrors.find(e => e.path === 'name') ? 'invalid' : '' %>"
+    />
+    <% const nameError = validationErrors.find(e => e.path === 'name'); %>
+    <% if (nameError) { %>
+      <p class="invalid"><%= nameError.msg %></p>
+    <% } %>
     <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required />
+    <input
+      type="text"
+      id="username"
+      name="username"
+      required
+      value="<%= previousValues?.username %>"
+      class="<%= validationErrors.find(e => e.path === 'username') ? 'invalid' : '' %>"
+    />
+    <% const usernameError = validationErrors.find(e => e.path === 'username'); %>
+    <% if (usernameError) { %>
+      <p class="invalid"><%= usernameError.msg %></p>
+    <% } %>
     <label for="email">Email:</label>
-    <input type="text" id="email" name="email" required />
+    <input
+      type="text"
+      id="email"
+      name="email"
+      required
+      value="<%= previousValues?.email %>"
+      class="<%= validationErrors.find(e => e.path === 'email') ? 'invalid' : '' %>"
+    />
+    <% const emailError = validationErrors.find(e => e.path === 'email'); %>
+    <% if (emailError) { %>
+      <p class="invalid"><%= emailError.msg %></p>
+    <% } %>
     <label for="password">Password:</label>
     <input
       type="password"
@@ -15,7 +48,12 @@
       name="password"
       placeholder="password"
       required
+      class="<%= validationErrors.find(e => e.path === 'password') ? 'invalid' : '' %>"
     />
+    <% const passwordError = validationErrors.find(e => e.path === 'password'); %>
+    <% if (passwordError) { %>
+      <p class="invalid"><%= passwordError.msg %></p>
+    <% } %>
     <label for="confirmPassword">Confirm Password:</label>
     <input
       type="password"
@@ -23,7 +61,12 @@
       name="confirmPassword"
       placeholder="confirm password"
       required
+      class="<%= validationErrors.find(e => e.path === 'confirmPassword') ? 'invalid' : '' %>"
     />
+    <% const confirmPasswordError = validationErrors.find(e => e.path === 'confirmPassword'); %>
+    <% if (confirmPasswordError) { %>
+      <p class="invalid"><%= confirmPasswordError.msg %></p>
+    <% } %>
     <button type="submit">Register</button>
     <!-- Include the CSRF token as a hidden input -->
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />

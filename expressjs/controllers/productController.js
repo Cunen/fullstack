@@ -1,4 +1,6 @@
+import { validationResult } from "express-validator";
 import { Product } from "./databaseController.js";
+import redirectWithNotification from "../utilities/notification.js";
 
 export const productViewController = (req, res, next) => {
   const id = req.params.id;
@@ -47,28 +49,64 @@ export const editProductViewController = (req, res, next) => {
   });
 };
 
-export const productAddController = (req, res) => {
+export const productAddController = async (req, res, next) => {
   const { name, price, description, inventory } = req.body;
-  const product = new Product({
-    name,
-    price: Number(price),
-    description,
-    inventory: Number(inventory),
-  });
-  product.save().then(() => {
-    res.redirect("/view/products");
-  });
+
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return redirectWithNotification(
+        req,
+        res,
+        "/view/add-product",
+        "error",
+        "Validation failed",
+        errors.array(),
+        { name, price, description, inventory }
+      );
+    }
+
+    const product = new Product({
+      name,
+      price: Number(price),
+      description,
+      inventory: Number(inventory),
+    });
+
+    await product.save();
+
+    return res.redirect("/view/products");
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    next(err);
+  }
 };
 
-export const productEditController = (req, res) => {
+export const productEditController = async (req, res) => {
   const { name, price, description, inventory, productId } = req.body;
 
-  Product.updateOne(
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return redirectWithNotification(
+      req,
+      res,
+      "/view/edit-product/" + productId,
+      "error",
+      "Validation failed",
+      errors.array(),
+      { name, price, description, inventory }
+    );
+  }
+
+  await Product.updateOne(
     { _id: productId },
     { name, price: Number(price), description, inventory: Number(inventory) }
-  ).then(() => {
-    res.redirect("/view/products");
-  });
+  );
+
+  return res.redirect("/view/products");
 };
 
 export const productDeleteController = (req, res) => {

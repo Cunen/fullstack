@@ -4,6 +4,7 @@ import {
   productViewController,
   addProductViewController,
   editProductViewController,
+  productsViewController,
 } from "../controllers/productController.js";
 import {
   notFoundViewController,
@@ -31,6 +32,7 @@ viewRouter.get("/register", registerViewController);
 viewRouter.get("/password-reset", requestResetViewController);
 viewRouter.get("/password-reset/:token", resetPasswordViewController);
 viewRouter.get("/home", rootViewController);
+viewRouter.get("/products", productsViewController);
 viewRouter.get("/product/:id", productViewController);
 
 viewRouter.get("/checkout", allowAuth, checkoutViewController);

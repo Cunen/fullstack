@@ -8,7 +8,10 @@ import apiRouter from "./routes/apiRouter.js";
 import viewRouter from "./routes/viewRouter.js";
 
 import { cssDir } from "./utilities/path.js";
-import { rootViewController } from "./controllers/rootController.js";
+import {
+  errorViewController,
+  rootViewController,
+} from "./controllers/rootController.js";
 import { connectWithMongoose } from "./controllers/databaseController.js";
 import sessionMiddleware from "./utilities/session.js";
 import { authMiddleware } from "./controllers/authController.js";
@@ -44,6 +47,9 @@ app.use("/view", viewRouter);
 
 // Fallback
 app.use(rootViewController);
+
+// Errors
+app.use(errorViewController);
 
 // Connect to MongoDB with Mongoose
 connectWithMongoose()

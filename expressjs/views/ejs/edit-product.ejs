@@ -3,34 +3,63 @@
   <h2>Edit product</h2>
   <form action="/api/product/edit" method="POST">
     <input type="hidden" name="productId" value="<%= product._id %>" />
+
+    <label for="name">Name:</label>
+    <% const nameError = validationErrors.find(e => e.path === 'name'); %>
     <input
       type="text"
       name="name"
       id="name"
       placeholder="name"
-      value="<%= product.name %>"
+      value="<%= previousValues?.name || product.name %>"
+      class="<%= nameError ? 'invalid' : '' %>"
     />
+    <% if (nameError) { %>
+      <p class="invalid"><%= nameError.msg %></p>
+    <% } %>
+
+    <label for="price">Price:</label>
+    <% const priceError = validationErrors.find(e => e.path === 'price'); %>
     <input
       type="text"
       name="price"
       id="price"
       placeholder="price"
-      value="<%= product.price %>"
+      value="<%= previousValues?.price || product.price %>"
+      class="<%= priceError ? 'invalid' : '' %>"
     />
+    <% if (priceError) { %>
+      <p class="invalid"><%= priceError.msg %></p>
+    <% } %>
+
+    <label for="description">Description:</label>
+    <% const descriptionError = validationErrors.find(e => e.path === 'description'); %>
     <input
       type="text"
       name="description"
       id="description"
       placeholder="description"
-      value="<%= product.description %>"
+      value="<%= previousValues?.description || product.description %>"
+      class="<%= descriptionError ? 'invalid' : '' %>"
     />
+    <% if (descriptionError) { %>
+      <p class="invalid"><%= descriptionError.msg %></p>
+    <% } %>
+
+    <label for="inventory">Inventory:</label>
+    <% const inventoryError = validationErrors.find(e => e.path === 'inventory'); %>
     <input
       type="text"
       name="inventory"
       id="inventory"
       placeholder="inventory"
-      value="<%= product.inventory %>"
+      value="<%= previousValues?.inventory || product.inventory %>"
+      class="<%= inventoryError ? 'invalid' : '' %>"
     />
+    <% if (inventoryError) { %>
+      <p class="invalid"><%= inventoryError.msg %></p>
+    <% } %>
+    
     <button type="submit">Update Product</button>
     <!-- Include the CSRF token as a hidden input -->
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />

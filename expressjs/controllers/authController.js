@@ -52,12 +52,10 @@ export const loginController = async (req, res) => {
 
 export const loginViewController = (req, res) => {
   if (req?.session?.user) return res.redirect("/");
-
-  const { error } = req.query;
   res.render("login", {
     page: "login",
     pageTitle: "Login",
-    error,
+    oldValues: { username: "" },
   });
 };
 
@@ -72,10 +70,9 @@ export const registerController = async (req, res) => {
       res,
       "/view/register",
       "error",
-      errors
-        .array()
-        .map((e) => e.path + ": " + e.msg)
-        .join(", ")
+      "Validation failed",
+      errors.array(),
+      { name, username, email }
     );
   }
 
@@ -203,16 +200,35 @@ export const resetPasswordViewController = async (req, res) => {
 };
 
 export const authMiddleware = async (req, res, next) => {
-  const { user, notification } = req.session || {};
+  const { user, notification, validationErrors, previousValues } =
+    req.session || {};
   res.locals.userIsLoggedIn = !!user;
   res.locals.csrfToken = req.csrfToken();
   res.locals.notification = {};
+  res.locals.previousValues = {};
+  res.locals.validationErrors = [];
+
+  let shouldSaveSession = false;
+
+  if (validationErrors) {
+    res.locals.validationErrors = validationErrors;
+    delete req.session.validationErrors;
+    shouldSaveSession = true;
+  }
 
   if (notification) {
     res.locals.notification = notification;
     delete req.session.notification;
-    await req.session.save();
+    shouldSaveSession = true;
   }
+
+  if (previousValues) {
+    res.locals.previousValues = previousValues;
+    delete req.session.previousValues;
+    shouldSaveSession = true;
+  }
+
+  if (shouldSaveSession) await req.session.save();
 
   if (user) req.loggedInUser = user;
   next();
