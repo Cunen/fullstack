@@ -216,3 +216,25 @@ p.invalid {
   margin: 0;
   padding: 0;
 }
+
+.pagination {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.pagination a {
+  text-decoration: none;
+}
+
+.pagination a button {
+  color: black;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.pagination a.active button {
+  border: 1px solid #0056b3;
+  background-color: #cee6ff;
+}

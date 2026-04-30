@@ -22,14 +22,29 @@ export const productViewController = (req, res, next) => {
   });
 };
 
-export const productsViewController = (req, res) => {
-  Product.find().then((products) => {
-    res.render("products", {
+export const productsViewController = async (req, res, next) => {
+  try {
+    const page = Number(req.query.page || 1);
+
+    const totalProducts = await Product.countDocuments();
+
+    const products = await Product.find()
+      .skip((page - 1) * 2)
+      .limit(2);
+
+    return res.render("products", {
       products,
       page: "products",
       pageTitle: "Products",
+      totalPages: Math.ceil(totalProducts / 2),
+      currentPage: page,
     });
-  });
+  } catch (err) {
+    console.log(error);
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    next(err);
+  }
 };
 
 export const addProductViewController = (req, res) => {
@@ -57,8 +72,6 @@ export const editProductViewController = (req, res, next) => {
 export const productAddController = async (req, res, next) => {
   const { name, price, description, inventory } = req.body;
   const image = req.file;
-
-  console.log(image);
 
   try {
     const errors = validationResult(req);
