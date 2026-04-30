@@ -1,7 +1,7 @@
 <%- include('base-top') %>
 <div class="form-wrapper">
   <h2>Add product</h2>
-  <form action="/api/product" method="POST">
+  <form action="/api/product" method="POST" enctype="multipart/form-data">
     <label for="name">Name:</label>
     <% const nameError = validationErrors.find(e => e.path === 'name'); %>
     <input type="text" name="name" id="name" placeholder="name" value="<%= previousValues?.name %>" class="<%= nameError ? 'invalid' : '' %>" />
@@ -28,6 +28,13 @@
     <input type="text" name="inventory" id="inventory" placeholder="inventory" value="<%= previousValues?.inventory %>" class="<%= inventoryError ? 'invalid' : '' %>" />
     <% if (inventoryError) { %>
       <p class="invalid"><%= inventoryError.msg %></p>
+    <% } %>
+
+    <label for="image">Image:</label>
+    <% const imageError = validationErrors.find(e => e.path === 'image'); %>
+    <input type="file" name="image" id="image" class="<%= imageError ? 'invalid' : '' %>" accept="image/png, image/jpeg"/>
+    <% if (imageError) { %>
+      <p class="invalid"><%= imageError.msg %></p>
     <% } %>
 
     <button type="submit">Add Product</button>

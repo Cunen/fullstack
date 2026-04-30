@@ -1,6 +1,11 @@
 import { validationResult } from "express-validator";
+import fs from "fs";
+import PDFKit from "pdfkit";
+
 import { Product } from "./databaseController.js";
 import redirectWithNotification from "../utilities/notification.js";
+import path from "path";
+import { imagesDir } from "../utilities/path.js";
 
 export const productViewController = (req, res, next) => {
   const id = req.params.id;
@@ -51,18 +56,27 @@ export const editProductViewController = (req, res, next) => {
 
 export const productAddController = async (req, res, next) => {
   const { name, price, description, inventory } = req.body;
+  const image = req.file;
+
+  console.log(image);
 
   try {
     const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
+    const errArray = !errors.isEmpty() ? errors.array() : [];
+
+    if (!image) {
+      errArray.push({ msg: "Image upload failed", param: "image" });
+    }
+
+    if (errArray.length > 0) {
       return redirectWithNotification(
         req,
         res,
         "/view/add-product",
         "error",
         "Validation failed",
-        errors.array(),
+        errArray,
         { name, price, description, inventory }
       );
     }
@@ -72,6 +86,7 @@ export const productAddController = async (req, res, next) => {
       price: Number(price),
       description,
       inventory: Number(inventory),
+      image: image.filename,
     });
 
     await product.save();
@@ -109,9 +124,90 @@ export const productEditController = async (req, res) => {
   return res.redirect("/view/products");
 };
 
-export const productDeleteController = (req, res) => {
+export const productDeleteController = async (req, res, next) => {
   const { productId } = req.body;
-  Product.findByIdAndDelete(productId).then(() => {
-    res.redirect("/view/products");
-  });
+  try {
+    const product = await Product.findByIdAndDelete(productId);
+
+    if (!product) throw new Error("Product not found");
+
+    await fs.unlink("localimages/" + product.image);
+
+    return res.redirect("/view/products");
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    next(err);
+  }
+};
+
+export const downloadProductImageController = async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId);
+
+    if (!product) throw new Error("Product not found");
+
+    const stream = fs.createReadStream(
+      path.join(imagesDir + "/" + product.image)
+    );
+
+    const ext = path.extname(product.image).toLowerCase();
+    const mimeTypes = {
+      ".png": "image/png",
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg",
+    };
+
+    // Redirect back to where we came from
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${product.image}"`
+    );
+
+    res.setHeader("Content-Type", mimeTypes[ext] || "application/octet-stream");
+
+    return stream.pipe(res);
+  } catch (err) {
+    console.log(err);
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    next(err);
+  }
+};
+
+export const downloadProductPdfController = async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId);
+
+    if (!product) throw new Error("Product not found");
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="product-${productId}.pdf"`
+    );
+
+    const PdfDoc = new PDFKit();
+    PdfDoc.pipe(fs.createWriteStream("product.pdf"));
+    PdfDoc.pipe(res);
+
+    PdfDoc.fontSize(20).text(product.name, { underline: true });
+    PdfDoc.moveDown();
+    PdfDoc.fontSize(14).text(`Price: $${product.price.toFixed(2)}`);
+    PdfDoc.moveDown();
+    PdfDoc.text(`Description: ${product.description}`);
+    PdfDoc.moveDown();
+    PdfDoc.text(`Inventory: ${product.inventory}`);
+
+    PdfDoc.end();
+  } catch (err) {
+    console.log(err);
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    next(err);
+  }
 };

@@ -7,7 +7,7 @@ import csrf from "csurf";
 import apiRouter from "./routes/apiRouter.js";
 import viewRouter from "./routes/viewRouter.js";
 
-import { cssDir } from "./utilities/path.js";
+import { cssDir, imagesDir } from "./utilities/path.js";
 import {
   errorViewController,
   rootViewController,
@@ -15,6 +15,7 @@ import {
 import { connectWithMongoose } from "./controllers/databaseController.js";
 import sessionMiddleware from "./utilities/session.js";
 import { authMiddleware } from "./controllers/authController.js";
+import multerProvider from "./utilities/multer.js";
 
 const app = express();
 
@@ -29,12 +30,18 @@ app.use(sessionMiddleware);
 
 // Add parsing for HTML forms
 app.use(bodyParser.urlencoded({ extended: false }));
+// "image" should match the name attribute
+app.use(multerProvider);
+
 app.use(cookieParser());
 
 app.use(csrfProtection);
 
 // CSS directory is registered as a public directory
 app.use(express.static(cssDir));
+
+// Images directory is registered as a public directory
+app.use(express.static(imagesDir));
 
 // Add logged in user information to all views and requests
 app.use(authMiddleware);

@@ -2,6 +2,7 @@
 <div class="product-list">
   <h2>Products</h2>
   <div class="product-item">
+    <img src="/<%= product.image %>" alt="<%= product.name %>" />
     <div class="counter">
       <p class="<% if (product.inventory === 0) { %>out<% } %>"><%= product.inventory %></p>
     </div>
@@ -15,7 +16,15 @@
       <a href="/view/edit-product/<%= product._id %>">
         <button>Edit Product</button>
       </a>
+
+      <a href="/api/product/download/image/<%= product._id %>">
+        <button>Download Image</button>
+      </a>
        
+      <a href="/api/product/download/pdf/<%= product._id %>">
+        <button>Download PDF</button>
+      </a>
+
       <% if (product.inventory > 0) { %>
         <form action="/api/cart/add" method="POST">
           <input type="hidden" name="productId" value="<%= product._id %>" />

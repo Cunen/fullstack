@@ -1,6 +1,8 @@
 import express from "express";
 
 import {
+  downloadProductImageController,
+  downloadProductPdfController,
   productAddController,
   productDeleteController,
   productEditController,
@@ -38,6 +40,11 @@ apiRouter.post(
   productEditController
 );
 apiRouter.post("/product/delete", allowAuth, productDeleteController);
+apiRouter.get(
+  "/product/download/image/:productId",
+  downloadProductImageController
+);
+apiRouter.get("/product/download/pdf/:productId", downloadProductPdfController);
 
 apiRouter.post("/cart/add", allowAuth, cartAddController);
 apiRouter.post("/cart/edit", allowAuth, cartEditController);

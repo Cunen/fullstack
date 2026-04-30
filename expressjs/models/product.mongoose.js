@@ -7,6 +7,7 @@ const productSchema = new Schema({
   price: { type: Number, required: true, unique: true },
   description: { type: String, required: true, unique: true },
   inventory: { type: Number, required: true },
+  image: { type: String, required: true },
 });
 
 const MongooseProduct = model("product", productSchema);
