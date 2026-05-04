@@ -19,10 +19,24 @@
     <% }); %>
   <% } %>
 </div>
+<button type="button" id="stripe-button">STRIPE</button>
 <form action="/api/checkout" method="POST">
   <button type="submit">Confirm checkout</button>
     <!-- Include the CSRF token as a hidden input -->
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
 </form>
 <a href="/view/cart"><button>Back to cart</button></a>
+
+<script src="https://js.stripe.com/v3"></script>
+<script>
+  var stripe = Stripe('<%= stripePublicKey %>');
+  var checkoutButton = document.getElementById('stripe-button');
+  checkoutButton.addEventListener('click', function () {
+    stripe.redirectToCheckout({
+      sessionId: '<%= stripeSessionId %>'
+    });
+  });
+</script>
+
+
 <%- include('base-bottom') %>

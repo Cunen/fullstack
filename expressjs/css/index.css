@@ -238,3 +238,7 @@ p.invalid {
   border: 1px solid #0056b3;
   background-color: #cee6ff;
 }
+
+.form-wrapper.hidden {
+  display: none;
+}

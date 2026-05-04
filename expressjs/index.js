@@ -7,7 +7,7 @@ import csrf from "csurf";
 import apiRouter from "./routes/apiRouter.js";
 import viewRouter from "./routes/viewRouter.js";
 
-import { cssDir, imagesDir } from "./utilities/path.js";
+import { cssDir, imagesDir, jsDir } from "./utilities/path.js";
 import {
   errorViewController,
   rootViewController,
@@ -42,6 +42,9 @@ app.use(express.static(cssDir));
 
 // Images directory is registered as a public directory
 app.use(express.static(imagesDir));
+
+// JavaScript directory is registered as a public directory
+app.use(express.static(jsDir));
 
 // Add logged in user information to all views and requests
 app.use(authMiddleware);

@@ -1,5 +1,6 @@
 <%- include('base-top') %>
-<div class="form-wrapper">
+
+<div class="form-wrapper" id="product-edit-form">
   <h2>Edit product</h2>
   <form action="/api/product/edit" method="POST">
     <input type="hidden" name="productId" value="<%= product._id %>" />
@@ -67,8 +68,17 @@
   <form action="/api/product/delete" method="POST">
     <input type="hidden" name="productId" value="<%= product._id %>" />
     <button type="submit">Delete Product</button>
+    <button id="delete-async" type="button" onclick="deleteAsync(this)">Delete Async</button>
     <!-- Include the CSRF token as a hidden input -->
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
   </form>
 </div>
+
+<div class="form-wrapper hidden" id="product-deleted">
+  <h2>Product deleted successfully</h2>
+  <a href="/view/products"><button>Back to products</button></a>
+</div>
+
+<script src="/fnCollection.js"></script>
+
 <%- include('base-bottom') %>

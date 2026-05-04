@@ -4,6 +4,7 @@ import {
   downloadProductImageController,
   downloadProductPdfController,
   productAddController,
+  productDeleteAsyncController,
   productDeleteController,
   productEditController,
 } from "../controllers/productController.js";
@@ -40,6 +41,11 @@ apiRouter.post(
   productEditController
 );
 apiRouter.post("/product/delete", allowAuth, productDeleteController);
+apiRouter.delete(
+  "/product/delete/:productId",
+  allowAuth,
+  productDeleteAsyncController
+);
 apiRouter.get(
   "/product/download/image/:productId",
   downloadProductImageController

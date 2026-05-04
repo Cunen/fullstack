@@ -144,13 +144,38 @@ export const productDeleteController = async (req, res, next) => {
 
     if (!product) throw new Error("Product not found");
 
-    await fs.unlink("localimages/" + product.image);
+    await fs.unlink(path.join(imagesDir, product.image), (err) => {
+      if (err) throw new Error("Failed to delete image");
+      return;
+    });
 
     return res.redirect("/view/products");
   } catch (err) {
     const error = new Error(err);
     error.httpStatusCode = 500;
     next(err);
+  }
+};
+
+export const productDeleteAsyncController = async (req, res) => {
+  const { productId } = req.params;
+  try {
+    const product = await Product.findByIdAndDelete(productId);
+
+    if (!product) throw new Error("Product not found");
+
+    await fs.unlink(path.join(imagesDir, product.image), (err) => {
+      if (err) throw new Error("Failed to delete image");
+      return;
+    });
+
+    return res
+      .status(200)
+      .json({ message: "Product deleted successfully", productId });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error, message: "Failed to delete product", productId });
   }
 };
 

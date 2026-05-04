@@ -1,18 +1,59 @@
+import Stripe from "stripe";
+import dotenv from "dotenv";
+import process from "process";
+
 import { Cart, Order, Product } from "./databaseController.js";
 
-export const checkoutViewController = async (req, res) => {
-  const cart = await Cart.findOne({ userId: req.loggedInUser._id }).populate(
-    "items.productId"
-  );
+dotenv.config({ path: ".env.local" });
 
-  const total = cart?.getTotal() || 0;
+const stripeSk = process.env.STRIPE_SK;
+const stripe = new Stripe(stripeSk);
 
-  return res.render("checkout", {
-    cart,
-    total,
-    page: "checkout",
-    pageTitle: "Checkout",
-  });
+export const checkoutViewController = async (req, res, next) => {
+  try {
+    const cart = await Cart.findOne({ userId: req.loggedInUser._id }).populate(
+      "items.productId"
+    );
+
+    if (!cart || cart.items.length === 0) {
+      return res.redirect("/view/cart");
+    }
+
+    const lineItems = cart.items.map((item) => ({
+      price_data: {
+        currency: "eur",
+        product_data: {
+          name: item.productId.name,
+          description: item.productId.description || "No description",
+        },
+        unit_amount: Math.round(item.productId.price * 100), // Convert to cents
+      },
+      quantity: item.count,
+    }));
+
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      line_items: lineItems,
+      success_url: `${req.protocol}://${req.get("host")}/view/orders`,
+      cancel_url: `${req.protocol}://${req.get("host")}/view/checkout`,
+    });
+
+    const total = cart.getTotal() || 0;
+
+    return res.render("checkout", {
+      cart,
+      total,
+      page: "checkout",
+      pageTitle: "Checkout",
+      stripeSessionId: session?.id || "404",
+      stripePublicKey: process.env.STRIPE_PK,
+    });
+  } catch (err) {
+    console.log(err);
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    next(err);
+  }
 };
 
 export const orderViewController = async (req, res) => {
