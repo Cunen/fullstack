@@ -1,6 +1,4 @@
-import type { Location } from '../msw/schema';
-import { useMockQuery, useQuery } from './query.utils';
+import type { Post } from "../types/types";
+import { useQuery } from "./query.utils";
 
-export const useUsers = () => useQuery<string[]>('users');
-
-export const useLocations = () => useMockQuery<Location[]>('maps/locations');
+export const usePosts = () => useQuery<Post[]>("posts");

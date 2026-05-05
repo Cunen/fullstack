@@ -1,20 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MOCK_API } from "../msw/handlers";
 
+const backend = "http://localhost:3000/api";
+
 export function useQuery<T>(key: string) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const runQuery = useCallback(() => {
-    fetch(`/api/${key}`)
+    fetch(`${backend}/${key}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => {
         if (!response.ok) throw new Error("Network response was not ok");
+        console.log(response);
         return response.json();
       })
-      .then((json) => {
-        const data = json.data as T;
-        setData(data);
+      .then((data) => {
+        setData(data as T);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
