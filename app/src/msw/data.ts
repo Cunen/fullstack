@@ -1,9 +1,9 @@
-import type { Location } from './schema';
+import type { Location } from "./schema";
 
 export const locations: Location[] = [
   {
-    id: 'loc-001',
-    name: 'AG-2 Test Site',
+    id: "loc-001",
+    name: "AG-2 Test Site",
     geometry: [
       [-118.2437, 34.0522],
       [-118.2437, 34.0584],
@@ -13,8 +13,8 @@ export const locations: Location[] = [
     ],
   },
   {
-    id: 'loc-002',
-    name: 'Westwood Plaza',
+    id: "loc-002",
+    name: "Westwood Plaza",
     geometry: [
       [-118.445, 34.065],
       [-118.445, 34.072],

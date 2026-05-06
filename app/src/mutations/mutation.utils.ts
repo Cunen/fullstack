@@ -6,8 +6,26 @@ export const usePost = <T>(endpoint: string) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to add entity to ${endpoint}`);
+    }
+    return response.json();
+  };
+  return { addEntity };
+};
+
+export const useFormDataPost = (endpoint: string) => {
+  const addEntity = async (formData: FormData) => {
+    const response = await fetch(backend + endpoint, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     });
     if (!response.ok) {
       throw new Error(`Failed to add entity to ${endpoint}`);
@@ -23,6 +41,7 @@ export const usePatch = <T>(endpoint: string) => {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(data),
     });
@@ -40,6 +59,7 @@ export const useDelete = (endpoint: string) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
     if (!response.ok) {

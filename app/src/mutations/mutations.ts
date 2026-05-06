@@ -1,11 +1,25 @@
-import type { Post } from "../types/types";
-import { useDelete, usePatch, usePost } from "./mutation.utils";
+import type { Post, User } from "../types/types";
+import {
+  useDelete,
+  useFormDataPost,
+  usePatch,
+  usePost,
+} from "./mutation.utils";
 
 export const useAddPost = () => {
-  const { addEntity } = usePost<Omit<Post, "_id" | "createdAt">>("posts");
+  const { addEntity } =
+    usePost<Omit<Post, "_id" | "createdAt" | "image">>("posts");
 
-  const addPost = async (post: Omit<Post, "_id" | "createdAt">) =>
+  const addPost = async (post: Omit<Post, "_id" | "createdAt" | "image">) =>
     addEntity(post);
+
+  return { addPost };
+};
+
+export const useAddPostWithImage = () => {
+  const { addEntity } = useFormDataPost("posts/form");
+
+  const addPost = async (formData: FormData) => addEntity(formData);
 
   return { addPost };
 };
@@ -25,4 +39,25 @@ export const useUpdatePost = () => {
     patchEntity(id, post);
 
   return { updatePost };
+};
+
+export const useCreateUser = () => {
+  const { addEntity } = usePost<Omit<User, "_id">>("users");
+
+  const createUser = async (user: Omit<User, "_id">) => addEntity(user);
+
+  return { createUser };
+};
+
+export const useLoginUser = () => {
+  const { addEntity } = usePost<{ username: string; password: string }>(
+    "users/login",
+  );
+
+  const loginUser = async (credentials: {
+    username: string;
+    password: string;
+  }) => addEntity(credentials);
+
+  return { loginUser };
 };

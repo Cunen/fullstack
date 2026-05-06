@@ -1,5 +1,5 @@
-import { setupWorker } from 'msw/browser';
+import { setupWorker } from "msw/browser";
 
-import { handlers } from './handlers.ts';
+import { handlers } from "./handlers.ts";
 
 export const worker = setupWorker(...handlers);

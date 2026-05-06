@@ -4,17 +4,28 @@ import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
-const userSchema = new Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-});
+const userSchema = new Schema(
+  {
+    email: { type: String, required: true, unique: true },
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const postSchema = new Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  user: { type: Schema.Types.ObjectId, ref: "user", required: true },
-  createdAt: { type: Date, default: Date.now },
-});
+const postSchema = new Schema(
+  {
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    user: { type: Schema.Types.ObjectId, ref: "user", required: true },
+    image: { type: String },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const Post = model("post", postSchema);
 const User = model("user", userSchema);
