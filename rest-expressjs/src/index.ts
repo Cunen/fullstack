@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import multer from "multer";
+import { Server } from "socket.io";
 
 import postRoutes from "./routes/post.routes.js";
 import { corsMiddleware } from "./middleware/cors.middleware.js";
@@ -8,6 +8,7 @@ import { connectWithMongoose } from "./db/mongoose.controller.js";
 import { publicDir } from "./utils/path.js";
 import multerProvider from "./utils/multer.js";
 import userRoutes from "./routes/user.routes.js";
+import { initializeSocket } from "./utils/socket.js";
 
 const app = express();
 const port = "3000";
@@ -26,9 +27,10 @@ app.use("/api/users", userRoutes);
 
 connectWithMongoose()
   .then(() => {
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
+    initializeSocket(server);
   })
   .catch((error) => {
     console.error("Failed to connect to MongoDB:", error);

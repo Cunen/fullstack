@@ -1,15 +1,18 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
-import { useGetPosts } from "../../queries/queries";
+import { useGetPostsViaSocket } from "../../queries/queries";
 
 import { Button } from "webcomponents";
 import { useDeletePost } from "../../mutations/mutations";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../providers/Auth/auth";
+import useSocket from "../../providers/socket/socket";
+import type { Post } from "../../types/types";
 
 function Posts() {
   const { token } = useAuth();
+  const { socket } = useSocket();
   const { deletePost } = useDeletePost(token);
   const navigate = useNavigate();
 
@@ -19,7 +22,7 @@ function Posts() {
     loading,
     data: postsData,
     refetch,
-  } = useGetPosts(token, { page, limit: "2" });
+  } = useGetPostsViaSocket(token, { page, limit: "2" });
 
   const { pagination, posts } = useMemo(() => {
     if (!postsData)
@@ -48,6 +51,27 @@ function Posts() {
     },
     [navigate],
   );
+
+  const handleSocketUpdate = useCallback(
+    (update: { action: string; data: Post }) => {
+      if (update.action === "add") {
+        console.log("New post added:", update.data);
+      } else if (update.action === "update") {
+        console.log("Post updated:", update.data);
+      } else if (update.action === "delete") {
+        console.log("Post deleted:", update.data);
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("posts", handleSocketUpdate);
+    return () => {
+      socket.off("posts", handleSocketUpdate);
+    };
+  }, [handleSocketUpdate, socket]);
 
   if (loading) return <p>Loading...</p>;
 

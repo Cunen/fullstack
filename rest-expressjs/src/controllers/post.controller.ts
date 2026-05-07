@@ -7,6 +7,7 @@ import { check, validationResult } from "express-validator";
 import { runValidation } from "../utils/utils.js";
 import { imagesDir } from "../utils/path.js";
 import type { AuthRequest } from "../utils/types.js";
+import { getIO } from "../utils/socket.js";
 
 // GET /api/posts
 export const getPosts = async (
@@ -93,7 +94,12 @@ export const createPostFromForm = async (
     if (errors) return res.status(400).json(errors);
 
     const newPost = new Post({ title, content, user, image: file.filename });
+
     const savedPost = await newPost.save();
+
+    const io = getIO();
+    io.emit("posts", { action: "add", data: savedPost });
+
     return res.status(201).json(savedPost);
   } catch (error) {
     return res.status(500).json({ message: "Failed to create post" });
@@ -125,6 +131,9 @@ export const updatePost = async (
     if (!updatedPost) {
       return res.status(404).json({ message: "Post not found" });
     }
+
+    const io = getIO();
+    io.emit("posts", { action: "update", data: updatedPost });
 
     return res.status(200).json(updatedPost);
   } catch (error) {
@@ -162,6 +171,9 @@ export const deletePost = async (
     }
 
     await post.deleteOne();
+
+    const io = getIO();
+    io.emit("posts", { action: "delete", data: post });
 
     return res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
