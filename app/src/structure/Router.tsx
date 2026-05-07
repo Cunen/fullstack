@@ -8,12 +8,21 @@ import Logout from "../pages/Login/Logout";
 import Login from "../pages/Login/Login";
 import { Providers } from "./Providers";
 import AuthView from "../providers/Auth/AuthView";
+import Memos from "../pages/Memos/Memos";
 
 export const RouterProvider: React.FC = () => {
   return (
     <Router>
       <Routes>
         <Route element={<Providers />}>
+          <Route
+            path="/memos"
+            element={
+              <AuthView redirect>
+                <Memos />
+              </AuthView>
+            }
+          />
           <Route
             path="/post/:id"
             element={

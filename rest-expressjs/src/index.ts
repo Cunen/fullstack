@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { Server } from "socket.io";
+import { graphqlHTTP } from "express-graphql";
 
 import postRoutes from "./routes/post.routes.js";
 import { corsMiddleware } from "./middleware/cors.middleware.js";
@@ -9,6 +9,8 @@ import { publicDir } from "./utils/path.js";
 import multerProvider from "./utils/multer.js";
 import userRoutes from "./routes/user.routes.js";
 import { initializeSocket } from "./utils/socket.js";
+import { schema } from "./graphql/schema.js";
+import { resolvers } from "./graphql/resolvers.js";
 
 const app = express();
 const port = "3000";
@@ -24,6 +26,15 @@ app.use(corsMiddleware);
 
 app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
+
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: schema,
+    rootValue: resolvers,
+    graphiql: true,
+  })
+);
 
 connectWithMongoose()
   .then(() => {

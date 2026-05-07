@@ -16,6 +16,7 @@ const Sidebar: React.FC = () => {
       <Bar>
         <AuthView>
           <Button click={goTo("/")} text="Posts" />
+          <Button click={goTo("/memos")} text="Memos" />
           <Button click={goTo("/add")} text="Create" />
           <Button click={goTo("/logout")} text="Logout" />
         </AuthView>

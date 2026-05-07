@@ -27,8 +27,19 @@ const postSchema = new Schema(
   }
 );
 
+const memoSchema = new Schema(
+  {
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 const Post = model("post", postSchema);
 const User = model("user", userSchema);
+const Memo = model("memo", memoSchema);
 
 dotenv.config({ path: ".env.local" });
 
@@ -53,4 +64,4 @@ const connectWithMongoose = async () => {
 };
 
 export { connectWithMongoose };
-export { Post, User };
+export { Post, User, Memo };
