@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { useLoginUser } from "../../mutations/mutations";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../providers/Auth/auth";
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { loginUser } = useLoginUser();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,14 +15,9 @@ export const Login: React.FC = () => {
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
 
-    const result = await loginUser({ username, password });
+    const result = await login(username, password);
 
-    if (result.token) {
-      localStorage.setItem("token", result.token);
-      localStorage.setItem("userId", result.userId);
-      const now = new Date();
-      now.setTime(now.getTime() + 3600 * 1000); // 1 hour
-      localStorage.setItem("tokenExpiry", now.toISOString());
+    if (result?.token && result?.userId) {
       navigate("/");
     }
   };

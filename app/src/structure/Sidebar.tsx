@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "webcomponents";
+import AuthView from "../providers/Auth/AuthView";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -13,11 +14,15 @@ const Sidebar: React.FC = () => {
   return (
     <Wrapper>
       <Bar>
-        <Button click={goTo("/")} text="Posts" />
-        <Button click={goTo("/add")} text="Create" />
-        <Button click={goTo("/login")} text="Login" />
-        <Button click={goTo("/logout")} text="Logout" />
-        <Button click={goTo("/register")} text="Register" />
+        <AuthView>
+          <Button click={goTo("/")} text="Posts" />
+          <Button click={goTo("/add")} text="Create" />
+          <Button click={goTo("/logout")} text="Logout" />
+        </AuthView>
+        <AuthView showForUnauthenticated>
+          <Button click={goTo("/login")} text="Login" />
+          <Button click={goTo("/register")} text="Register" />
+        </AuthView>
       </Bar>
       <Content>
         <Outlet />

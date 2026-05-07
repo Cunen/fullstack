@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
+import type { Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import process from "process";
@@ -8,6 +8,7 @@ import { User } from "../db/mongoose.controller.js";
 import { check, validationResult } from "express-validator";
 import { runValidation } from "../utils/utils.js";
 import { imagesDir } from "../utils/path.js";
+import type { AuthRequest } from "../utils/types.js";
 
 dotenv.config({ path: ".env.local" });
 
@@ -15,7 +16,7 @@ const secretKey = process.env.JWT_SECRET || "default_secret_key";
 
 // GET /api/users
 export const getUsers = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -42,7 +43,7 @@ export const getUsers = async (
 
 // GET /api/users/:id
 export const getUser = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -64,7 +65,7 @@ export const getUser = async (
 
 // POST /api/users
 export const createUser = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -110,7 +111,7 @@ export const validateUser = [
 
 // POST /api/users/login
 export const loginUser = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -139,4 +140,14 @@ export const loginUser = async (
   } catch (error) {
     return res.status(500).json({ message: "Failed to login" });
   }
+};
+
+export const logoutUser = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  // Since JWT is stateless, we can't invalidate the token on the server side.
+  // The client should simply delete the token to "log out".
+  return res.status(200).json({ message: "Logout successful" });
 };

@@ -6,9 +6,11 @@ import {
   usePost,
 } from "./mutation.utils";
 
-export const useAddPost = () => {
-  const { addEntity } =
-    usePost<Omit<Post, "_id" | "createdAt" | "image">>("posts");
+export const useAddPost = (token?: string | null) => {
+  const { addEntity } = usePost<Omit<Post, "_id" | "createdAt" | "image">>(
+    "posts",
+    token,
+  );
 
   const addPost = async (post: Omit<Post, "_id" | "createdAt" | "image">) =>
     addEntity(post);
@@ -16,24 +18,24 @@ export const useAddPost = () => {
   return { addPost };
 };
 
-export const useAddPostWithImage = () => {
-  const { addEntity } = useFormDataPost("posts/form");
+export const useAddPostWithImage = (token?: string | null) => {
+  const { addEntity } = useFormDataPost("posts/form", token);
 
   const addPost = async (formData: FormData) => addEntity(formData);
 
   return { addPost };
 };
 
-export const useDeletePost = () => {
-  const { deleteEntity } = useDelete("posts");
+export const useDeletePost = (token?: string | null) => {
+  const { deleteEntity } = useDelete("posts", token);
 
   const deletePost = async (id: string) => deleteEntity(id);
 
   return { deletePost };
 };
 
-export const useUpdatePost = () => {
-  const { patchEntity } = usePatch<Partial<Post>>("posts");
+export const useUpdatePost = (token?: string | null) => {
+  const { patchEntity } = usePatch<Partial<Post>>("posts", token);
 
   const updatePost = async (id: string, post: Partial<Post>) =>
     patchEntity(id, post);
@@ -41,17 +43,18 @@ export const useUpdatePost = () => {
   return { updatePost };
 };
 
-export const useCreateUser = () => {
-  const { addEntity } = usePost<Omit<User, "_id">>("users");
+export const useCreateUser = (token?: string | null) => {
+  const { addEntity } = usePost<Omit<User, "_id">>("users", token);
 
   const createUser = async (user: Omit<User, "_id">) => addEntity(user);
 
   return { createUser };
 };
 
-export const useLoginUser = () => {
+export const useLoginUser = (token?: string | null) => {
   const { addEntity } = usePost<{ username: string; password: string }>(
     "users/login",
+    token,
   );
 
   const loginUser = async (credentials: {
@@ -60,4 +63,12 @@ export const useLoginUser = () => {
   }) => addEntity(credentials);
 
   return { loginUser };
+};
+
+export const useLogoutUser = (token?: string | null) => {
+  const { addEntity } = usePost<{ userId: string }>("users/logout", token);
+
+  const logoutUser = async (userId: string) => addEntity({ userId });
+
+  return { logoutUser };
 };

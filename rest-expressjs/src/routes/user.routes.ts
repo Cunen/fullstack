@@ -4,15 +4,18 @@ import {
   getUser,
   getUsers,
   loginUser,
+  logoutUser,
   validateUser,
 } from "../controllers/user.controller.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const userRoutes = express.Router();
 
 userRoutes.get("/", getUsers);
-userRoutes.get("/:id", getUser);
+userRoutes.get("/:id", authMiddleware, getUser);
 
 userRoutes.post("/", validateUser, createUser);
 userRoutes.post("/login", loginUser);
+userRoutes.post("/logout", logoutUser);
 
 export default userRoutes;

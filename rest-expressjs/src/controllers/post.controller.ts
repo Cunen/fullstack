@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
+import type { Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
 
@@ -6,10 +6,11 @@ import { Post } from "../db/mongoose.controller.js";
 import { check, validationResult } from "express-validator";
 import { runValidation } from "../utils/utils.js";
 import { imagesDir } from "../utils/path.js";
+import type { AuthRequest } from "../utils/types.js";
 
 // GET /api/posts
 export const getPosts = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -35,7 +36,7 @@ export const getPosts = async (
 
 // GET /api/posts/:id
 export const getPost = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -56,7 +57,7 @@ export const getPost = async (
 
 // POST /api/posts
 export const createPost = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -76,7 +77,7 @@ export const createPost = async (
 
 // POST /api/posts/form
 export const createPostFromForm = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -107,7 +108,7 @@ export const validatePostData = [
 
 // PATCH /api/posts/:id
 export const updatePost = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -133,7 +134,7 @@ export const updatePost = async (
 
 // DELETE /api/posts/:id
 export const deletePost = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -142,8 +143,15 @@ export const deletePost = async (
   try {
     const post = await Post.findById(id);
 
+    const reqUserId = req.userId;
+    const postUserId = post?.user.toString();
+
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (postUserId !== reqUserId) {
+      return res.status(403).json({ message: "This is not your post!" });
     }
 
     if (post.image) {

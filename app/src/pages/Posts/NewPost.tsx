@@ -3,9 +3,11 @@ import styled from "styled-components";
 
 import { useAddPostWithImage } from "../../mutations/mutations";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../providers/Auth/auth";
 
 function NewPost() {
-  const { addPost } = useAddPostWithImage();
+  const { token } = useAuth();
+  const { addPost } = useAddPostWithImage(token);
   const navigate = useNavigate();
 
   const handlePost = useCallback(

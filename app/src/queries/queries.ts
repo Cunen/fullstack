@@ -11,6 +11,8 @@ type Paginated<T> = {
 
 type Params = { [key: string]: string };
 
-export const useGetPosts = (params?: Params) =>
-  useQuery<Paginated<Post[]>>("posts", params);
-export const useGetPost = (id: string) => useQuery<Post>(`posts/${id}`);
+export const useGetPosts = (token?: string | null, params?: Params) =>
+  useQuery<Paginated<Post[]>>("posts", token, params);
+
+export const useGetPost = (id: string, token?: string | null) =>
+  useQuery<Post>(`posts/${id}`, token);

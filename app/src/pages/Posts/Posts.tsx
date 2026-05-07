@@ -6,9 +6,11 @@ import { useGetPosts } from "../../queries/queries";
 import { Button } from "webcomponents";
 import { useDeletePost } from "../../mutations/mutations";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../providers/Auth/auth";
 
 function Posts() {
-  const { deletePost } = useDeletePost();
+  const { token } = useAuth();
+  const { deletePost } = useDeletePost(token);
   const navigate = useNavigate();
 
   const [page, setPage] = useState("1");
@@ -17,7 +19,7 @@ function Posts() {
     loading,
     data: postsData,
     refetch,
-  } = useGetPosts({ page, limit: "2" });
+  } = useGetPosts(token, { page, limit: "2" });
 
   const { pagination, posts } = useMemo(() => {
     if (!postsData)

@@ -1,12 +1,12 @@
 const backend = "http://localhost:3000/api/";
 
-export const usePost = <T>(endpoint: string) => {
+export const usePost = <T>(endpoint: string, token?: string | null) => {
   const addEntity = async (data: T) => {
     const response = await fetch(backend + endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
@@ -18,13 +18,13 @@ export const usePost = <T>(endpoint: string) => {
   return { addEntity };
 };
 
-export const useFormDataPost = (endpoint: string) => {
+export const useFormDataPost = (endpoint: string, token?: string | null) => {
   const addEntity = async (formData: FormData) => {
     const response = await fetch(backend + endpoint, {
       method: "POST",
       body: formData,
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     if (!response.ok) {
@@ -35,13 +35,13 @@ export const useFormDataPost = (endpoint: string) => {
   return { addEntity };
 };
 
-export const usePatch = <T>(endpoint: string) => {
+export const usePatch = <T>(endpoint: string, token?: string | null) => {
   const patchEntity = async (id: string, data: T) => {
     const response = await fetch(backend + endpoint + `/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
@@ -53,13 +53,13 @@ export const usePatch = <T>(endpoint: string) => {
   return { patchEntity };
 };
 
-export const useDelete = (endpoint: string) => {
+export const useDelete = (endpoint: string, token?: string | null) => {
   const deleteEntity = async (id: string) => {
     const response = await fetch(backend + endpoint + `/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     if (!response.ok) {

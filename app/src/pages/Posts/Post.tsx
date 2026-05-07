@@ -4,13 +4,14 @@ import styled from "styled-components";
 
 import { useGetPost } from "../../queries/queries";
 import { useUpdatePost } from "../../mutations/mutations";
+import useAuth from "../../providers/Auth/auth";
 
 const Post: React.FC = () => {
   const { id } = useParams();
+  const { token } = useAuth();
+  const { loading, data: postData, refetch } = useGetPost(id || "", token);
 
-  const { loading, data: postData, refetch } = useGetPost(id || "");
-
-  const { updatePost } = useUpdatePost();
+  const { updatePost } = useUpdatePost(token);
 
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");

@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
-import RouterProvider from "./Router.tsx";
+import RouterProvider from "./structure/Router.tsx";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function enableMocking() {
