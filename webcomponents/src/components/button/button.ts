@@ -1,6 +1,7 @@
 import { html, css, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { sendClickEvent } from "./events/events";
+import { ButtonHTMLAttributes } from "react";
 
 /** Button Component
  *

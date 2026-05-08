@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 import { Post } from "../db/mongoose.controller.js";
-import { check, validationResult } from "express-validator";
+import { check } from "express-validator";
 import { runValidation } from "../utils/utils.js";
 import { imagesDir } from "../utils/path.js";
 import type { AuthRequest } from "../utils/types.js";

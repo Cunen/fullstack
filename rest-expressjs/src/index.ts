@@ -11,6 +11,10 @@ import userRoutes from "./routes/user.routes.js";
 import { initializeSocket } from "./utils/socket.js";
 import { schema } from "./graphql/schema.js";
 import { resolvers } from "./graphql/resolvers.js";
+import {
+  graphqlAuthMiddleware,
+  graphqlOptionsMiddleware,
+} from "./middleware/graphql.middleware.js";
 
 const app = express();
 const port = "3000";
@@ -27,12 +31,20 @@ app.use(corsMiddleware);
 app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
 
+app.use("/graphql", graphqlOptionsMiddleware, graphqlAuthMiddleware);
+
 app.use(
   "/graphql",
   graphqlHTTP({
     schema: schema,
     rootValue: resolvers,
     graphiql: true,
+    customFormatErrorFn: (err) => {
+      return {
+        message: err.message,
+        status: 500,
+      };
+    },
   })
 );
 

@@ -1,27 +1,49 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { Button } from "webcomponents";
+import { useGetMemos } from "../../graphql/graphql.queries";
+import { useAddMemo, useDeleteMemo } from "../../graphql/graphql.mutations";
+import useAuth from "../../providers/Auth/auth";
 
 export const Memos: React.FC = () => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const { token } = useAuth();
+  const { data, loading, refetch } = useGetMemos(token);
+  const { addMemo } = useAddMemo(token);
+  const { deleteMemo } = useDeleteMemo(token);
+
+  const memos = useMemo(() => {
+    return data?.data.getMemos || [];
+  }, [data]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const title = formData.get("title") as string;
     const content = formData.get("content") as string;
-    console.log("New Memo:", { title, content });
+    await addMemo({ title, content });
+    refetch();
   };
 
-  const handleDelete = (id: string) => {
-    console.log("Delete Memo with ID:", id);
+  const handleDelete = async (id: string) => {
+    await deleteMemo(id);
+    refetch();
   };
 
   return (
     <Wrapper>
-      <Memo>
-        <Title>Memo 1</Title>
-        <Description>Description of Memo 1</Description>
-        <Button click={() => handleDelete("1")} text="Delete" />
-      </Memo>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        memos.map((memo) => {
+          return (
+            <Memo key={memo._id}>
+              <Title>{memo.title}</Title>
+              <Description>{memo.content}</Description>
+              <Button click={() => handleDelete(memo._id)} text="Delete" />
+            </Memo>
+          );
+        })
+      )}
       <Form onSubmit={handleSubmit}>
         <label htmlFor="title">Title:</label>
         <input type="text" placeholder="Title" name="title" />

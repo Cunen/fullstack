@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useAddPostWithImage } from "../../mutations/mutations";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../providers/Auth/auth";
+import { Button } from "webcomponents";
 
 function NewPost() {
   const { token } = useAuth();
@@ -22,7 +23,7 @@ function NewPost() {
 
   return (
     <Form>
-      <form onSubmit={handlePost}>
+      <form onSubmit={handlePost} id="new-post" name="new-post">
         <input type="text" name="title" placeholder="Title" required />
         <input type="text" name="content" placeholder="Content" required />
         <input type="hidden" name="user" value="69fb30a1d33f2159c7251b03" />
@@ -33,7 +34,7 @@ function NewPost() {
           accept="image/png, image/jpeg"
           required
         />
-        <button type="submit">Create Post</button>
+        <Button text="Create Post"></Button>
       </form>
     </Form>
   );
