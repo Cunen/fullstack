@@ -6,12 +6,25 @@ export const schema = buildSchema(`
     altText: String!
   }
 
+  type User {
+    _id: ID!
+    email: String!
+    username: String!
+  }
+  
+  type Comment {
+    _id: ID!
+    comment: String!
+    user: User!
+  }
+
   type Memo {
     _id: ID!
     title: String!
     content: String!
     createdAt: String!
     updatedAt: String!
+    comments: [Comment!]!
   }
 
   input MemoInput {
@@ -27,6 +40,7 @@ export const schema = buildSchema(`
   type Query {
     getHelloWorld: Message
     getMemos: [Memo!]!
+    getMemo(id: String!): Memo
   }
 
   schema {

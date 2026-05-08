@@ -39,6 +39,12 @@ export const Memos: React.FC = () => {
             <Memo key={memo._id}>
               <Title>{memo.title}</Title>
               <Description>{memo.content}</Description>
+              {memo.comments.map((comment, index) => (
+                <Comment key={index}>
+                  <CommentText>{comment.comment}</CommentText>
+                  <CommentUser>{comment.user.username}</CommentUser>
+                </Comment>
+              ))}
               <Button click={() => handleDelete(memo._id)} text="Delete" />
             </Memo>
           );
@@ -82,6 +88,22 @@ const Form = styled.form`
   padding: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
+`;
+
+const Comment = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+`;
+
+const CommentText = styled.span``;
+
+const CommentUser = styled.span`
+  font-size: 0.8em;
+  color: #555;
 `;
 
 export default Memos;

@@ -1,4 +1,4 @@
-import { Memo } from "../db/mongoose.controller.js";
+import { Comment, Memo } from "../db/mongoose.controller.js";
 import validator from "validator";
 import type { AuthRequest } from "../utils/types.js";
 
@@ -15,7 +15,26 @@ export const resolvers = {
         (req.errorMessage || "Unauthorized") + ": " + (req.errorStatus || 403)
       );
     }
-    return await Memo.find();
+    // Populate comments & comment users for each memo
+    return await Memo.find().populate({
+      path: "comments",
+      populate: {
+        path: "user",
+      },
+    });
+  },
+  getMemo: async ({ id }: { id: string }, req: AuthRequest) => {
+    if (!req.userId) {
+      throw new Error(
+        (req.errorMessage || "Unauthorized") + ": " + (req.errorStatus || 403)
+      );
+    }
+    return await Memo.findById(id).populate({
+      path: "comments",
+      populate: {
+        path: "user",
+      },
+    });
   },
   addMemo: async (
     { input }: { input: InstanceType<typeof Memo> },
@@ -41,7 +60,18 @@ export const resolvers = {
       throw new Error(errors.join(", "));
     }
 
-    const newMemo = new Memo(input);
+    const memo = new Memo(input);
+    const newMemo = await memo.save();
+
+    const comment = new Comment({
+      comment: "This is a comment",
+      user: req.userId,
+      memo: newMemo._id,
+    });
+    const newComment = await comment.save();
+
+    newMemo.comments.push(newComment._id);
+
     return await newMemo.save();
   },
   deleteMemo: async ({ id }: { id: string }, req: AuthRequest) => {

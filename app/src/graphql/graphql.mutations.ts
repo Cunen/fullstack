@@ -28,8 +28,8 @@ export const useAddMemo = (token?: string | null) => {
   }) => {
     const query = {
       query: `
-        mutation {
-          addMemo(input: { title: "${title}", content: "${content}" }) {
+        mutation AddMemo($title: String!, $content: String!) {
+          addMemo(input: { title: $title, content: $content }) {
             _id
             title
             content
@@ -38,6 +38,10 @@ export const useAddMemo = (token?: string | null) => {
           }
         }
       `,
+      variables: {
+        title,
+        content,
+      },
     };
 
     return await addEntity(query);
@@ -68,8 +72,8 @@ export const useDeleteMemo = (token?: string | null) => {
   const deleteMemo = async (id: string) => {
     const query = {
       query: `
-        mutation {
-          deleteMemo(id: "${id}") {
+        mutation DeleteMemo($id: String!) {
+          deleteMemo(id: $id) {
             _id
             title
             content
@@ -78,6 +82,9 @@ export const useDeleteMemo = (token?: string | null) => {
           }
         }
       `,
+      variables: {
+        id,
+      },
     };
 
     return await addEntity(query);

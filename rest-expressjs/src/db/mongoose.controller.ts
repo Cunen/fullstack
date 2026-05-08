@@ -27,10 +27,22 @@ const postSchema = new Schema(
   }
 );
 
+const commentSchema = new Schema(
+  {
+    comment: { type: String, required: true },
+    user: { type: Schema.Types.ObjectId, ref: "user", required: true },
+    memo: { type: Schema.Types.ObjectId, ref: "memo", required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 const memoSchema = new Schema(
   {
     title: { type: String, required: true },
     content: { type: String, required: true },
+    comments: [{ type: Schema.Types.ObjectId, ref: "comment" }],
   },
   {
     timestamps: true,
@@ -39,6 +51,7 @@ const memoSchema = new Schema(
 
 const Post = model("post", postSchema);
 const User = model("user", userSchema);
+const Comment = model("comment", commentSchema);
 const Memo = model("memo", memoSchema);
 
 dotenv.config({ path: ".env.local" });
@@ -64,4 +77,4 @@ const connectWithMongoose = async () => {
 };
 
 export { connectWithMongoose };
-export { Post, User, Memo };
+export { Post, User, Memo, Comment };

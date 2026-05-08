@@ -8,6 +8,14 @@ type MemoQuery = {
       content: string;
       createdAt: string;
       updatedAt: string;
+      comments: [
+        {
+          comment: string;
+          user: {
+            username: string;
+          };
+        },
+      ];
     }[];
   };
   errors?: {
@@ -18,7 +26,7 @@ type MemoQuery = {
 
 const memoQuery = {
   query: `
-    { getMemos { _id, title, content, createdAt, updatedAt }}
+    { getMemos { _id, title, content, createdAt, updatedAt, comments { comment, user { username } } } }
   `,
 };
 
