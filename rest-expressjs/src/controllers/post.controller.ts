@@ -1,13 +1,13 @@
 import type { Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
-
-import { Post } from "../db/mongoose.controller.js";
 import { check } from "express-validator";
-import { runValidation } from "../utils/utils.js";
-import { imagesDir } from "../utils/path.js";
-import type { AuthRequest } from "../utils/types.js";
-import { getIO } from "../utils/socket.js";
+
+import { Post } from "../db/mongoose.controller.ts";
+import { runValidation } from "../utils/utils.ts";
+import { imagesDir } from "../utils/path.ts";
+import type { AuthRequest } from "../utils/types.ts";
+import { getIO } from "../utils/socket.ts";
 
 // GET /api/posts
 export const getPosts = async (

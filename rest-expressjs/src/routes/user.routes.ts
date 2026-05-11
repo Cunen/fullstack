@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   createUser,
   getUser,
@@ -6,8 +7,8 @@ import {
   loginUser,
   logoutUser,
   validateUser,
-} from "../controllers/user.controller.js";
-import { authMiddleware } from "../middleware/auth.middleware.js";
+} from "../controllers/user.controller.ts";
+import { authMiddleware } from "../middleware/auth.middleware.ts";
 
 const userRoutes = express.Router();
 

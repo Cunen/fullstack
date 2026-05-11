@@ -3,14 +3,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import process from "process";
 import dotenv from "dotenv";
+import { check } from "express-validator";
 
-import { User } from "../db/mongoose.controller.js";
-import { check, validationResult } from "express-validator";
-import { runValidation } from "../utils/utils.js";
-import { imagesDir } from "../utils/path.js";
-import type { AuthRequest } from "../utils/types.js";
+import { User } from "../db/mongoose.controller.ts";
+import { runValidation } from "../utils/utils.ts";
+import type { AuthRequest } from "../utils/types.ts";
 
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
 const secretKey = process.env.JWT_SECRET || "default_secret_key";
 
@@ -121,12 +120,14 @@ export const loginUser = async (
     const user = await User.findOne({ username });
 
     if (!user) {
+      console.log("No user!");
       return res.status(401).json({ message: "Invalid login" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
+      console.log("Password mismatch!");
       return res.status(401).json({ message: "Invalid login" });
     }
 
@@ -138,6 +139,7 @@ export const loginUser = async (
       .status(200)
       .json({ message: "Login successful", token, userId: user._id });
   } catch (error) {
+    console.log("Error!", error);
     return res.status(500).json({ message: "Failed to login" });
   }
 };

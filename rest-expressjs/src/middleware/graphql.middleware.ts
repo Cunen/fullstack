@@ -2,9 +2,10 @@ import type { Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import process from "process";
 import jwt from "jsonwebtoken";
-import type { AuthRequest } from "../utils/types.js";
 
-dotenv.config({ path: ".env.local" });
+import type { AuthRequest } from "../utils/types.ts";
+
+dotenv.config({ path: ".env" });
 
 export const graphqlAuthMiddleware = (
   req: AuthRequest,

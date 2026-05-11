@@ -8,8 +8,8 @@ import {
   updatePost,
   validatePostData,
   createPostFromForm,
-} from "../controllers/post.controller.js";
-import { authMiddleware } from "../middleware/auth.middleware.js";
+} from "../controllers/post.controller.ts";
+import { authMiddleware } from "../middleware/auth.middleware.ts";
 
 const postRoutes = express.Router();
 

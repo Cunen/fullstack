@@ -2,16 +2,17 @@ import type { Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import process from "process";
 import jwt from "jsonwebtoken";
-import type { AuthRequest } from "../utils/types.js";
 
-dotenv.config({ path: ".env.local" });
+import type { AuthRequest } from "../utils/types.ts";
+
+dotenv.config({ path: ".env" });
 
 export const authMiddleware = (
   req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const token = req.get("Authorization")?.split(" ")[1];
   const secretKey = process.env.JWT_SECRET;
 
   if (!token) {

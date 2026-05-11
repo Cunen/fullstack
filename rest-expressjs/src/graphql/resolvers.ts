@@ -1,6 +1,7 @@
-import { Comment, Memo } from "../db/mongoose.controller.js";
 import validator from "validator";
-import type { AuthRequest } from "../utils/types.js";
+
+import { Comment, Memo } from "../db/mongoose.controller.ts";
+import type { AuthRequest } from "../utils/types.ts";
 
 export const resolvers = {
   getHelloWorld: () => {
